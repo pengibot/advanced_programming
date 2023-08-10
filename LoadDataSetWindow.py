@@ -24,8 +24,8 @@ class LoadDataSetWindow:
         self.master = master
 
         # Using StringVar to set text values and retrieve them
-        self.filepath1 = tk.StringVar()
-        self.filepath2 = tk.StringVar()
+        self.file_path_1 = tk.StringVar()
+        self.file_path_2 = tk.StringVar()
 
         # Created a frame to group components at the top of the dialog
         self.top_frame = tk.Frame(self.window, bg='white')
@@ -54,7 +54,7 @@ class LoadDataSetWindow:
         self.file_1_description.grid(row=0, column=0)
 
         # Adding Entry component for file 1 input (Broadcast Info File)
-        self.file_1_text_entry = tk.Entry(self.middle_frame, textvariable=self.filepath1, width=55)
+        self.file_1_text_entry = tk.Entry(self.middle_frame, textvariable=self.file_path_1, width=55)
         self.file_1_text_entry.grid(row=0, column=1)
 
         # Adding Button component to select file 1 input (Broadcast Info File)
@@ -71,7 +71,7 @@ class LoadDataSetWindow:
         self.file_2_description.grid(row=1, column=0)
 
         # Adding Entry component for file 2 input (Transmitter Info File)
-        self.file_2_text_entry = tk.Entry(self.middle_frame, textvariable=self.filepath2, width=55)
+        self.file_2_text_entry = tk.Entry(self.middle_frame, textvariable=self.file_path_2, width=55)
         self.file_2_text_entry.grid(row=1, column=1)
 
         # Adding Button component to select file 2 input (Transmitter Info File)
@@ -109,24 +109,32 @@ class LoadDataSetWindow:
         """
             Action to select file 1 and set the filepath
         """
-        filename = filedialog.askopenfilename()
+
+        # Opens a dialog to select a CSV file
+        filename = filedialog.askopenfilename(defaultextension=".csv",
+                                              filetypes=(("CSV Files", "*.csv"), ("All Files", "*.*")),
+                                              initialdir=".")
         LoggerFactory.get_logger().info(f"Selected files 1 as {filename}")
-        self.filepath1.set(filename)
+        self.file_path_1.set(filename)
 
     def select_file_2(self):
         """
             Action to select file 2 and set the filepath
         """
-        filename = filedialog.askopenfilename()
-        LoggerFactory.get_logger().info(f"Selected file 2 as {filename}")
-        self.filepath2.set(filename)
+
+        # Opens a dialog to select a CSV file
+        file_name = filedialog.askopenfilename(defaultextension=".csv",
+                                               filetypes=(("CSV Files", "*.csv"), ("All Files", "*.*")),
+                                               initialdir=".")
+        LoggerFactory.get_logger().info(f"Selected file 2 as {file_name}")
+        self.file_path_2.set(file_name)
 
     def load(self):
         """
             Action to load both files, perform validation TODO: Perform validation here
         """
-        LoggerFactory.get_logger().info(f"Loading file 1 as {self.filepath1.get()}")
-        LoggerFactory.get_logger().info(f"Loading file 2 as {self.filepath2.get()}")
+        LoggerFactory.get_logger().info(f"Loading file 1 as {self.file_path_1.get()}")
+        LoggerFactory.get_logger().info(f"Loading file 2 as {self.file_path_2.get()}")
         self.window.destroy()
 
     def cancel(self):

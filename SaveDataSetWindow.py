@@ -67,8 +67,8 @@ class SaveDataSetWindow:
 
     def save_file(self):
         filename = filedialog.asksaveasfilename(defaultextension=".json",
-                                                filetypes=(("JSON Files", "*.json"), ("All Files", "*.*"))
-                                                , initialdir=".")
+                                                filetypes=(("JSON Files", "*.json"), ("All Files", "*.*")),
+                                                initialdir=".")
         self.filepath.set(filename)
 
     def save(self):
