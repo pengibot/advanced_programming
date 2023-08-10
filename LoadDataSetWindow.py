@@ -1,10 +1,12 @@
 import tkinter as tk
 from tkinter import filedialog, Label, PhotoImage
 
+from LoggerFactory import LoggerFactory
+
 
 class LoadDataSetWindow:
-    def __init__(self, update_log, master=None):
-        update_log("Inside Data Set Window!!!")
+    def __init__(self, master=None):
+        LoggerFactory.get_logger().info("Initialized Load Data Set Window")
         self.window = tk.Toplevel(master)
         self.window.grab_set()
         self.window.configure(bg='white')
@@ -28,7 +30,7 @@ class LoadDataSetWindow:
 
         # self.tf.columnconfigure(0, weight=1)
         # self.tf.columnconfigure(1, weight=5)
-        self.tf.grid(row=0, column=0, sticky="WENS", pady=20)
+        self.tf.grid(row=0, column=0, sticky="NESW", pady=20)
 
         self.mf = tk.Frame(self.window, bg='white')
 
@@ -61,7 +63,7 @@ class LoadDataSetWindow:
         self.mf.columnconfigure(0, weight=1)
         self.mf.rowconfigure(0, weight=1)
         self.mf.rowconfigure(1, weight=1)
-        self.mf.grid(row=1, column=0, sticky="WENS", pady=10, padx=(10, 0))
+        self.mf.grid(row=1, column=0, sticky="NESW", pady=10, padx=(10, 0))
 
         self.bf = tk.Frame(self.window, bg='white')
 
@@ -74,7 +76,7 @@ class LoadDataSetWindow:
         self.bf.columnconfigure(0, weight=1)
         self.bf.rowconfigure(0, weight=1)
         self.bf.rowconfigure(1, weight=1)
-        self.bf.grid(row=2, column=0, sticky="WENS", pady=20, padx=50)
+        self.bf.grid(row=2, column=0, sticky="NESW", pady=20, padx=50)
 
     def load_file1(self):
         filename = filedialog.askopenfilename()

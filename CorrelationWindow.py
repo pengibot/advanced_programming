@@ -5,10 +5,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
+from LoggerFactory import LoggerFactory
+
 
 class CorrelationWindow:
-    def __init__(self, update_log, master=None):
-        update_log("Correlation Window Loaded")
+    def __init__(self, master=None):
+        LoggerFactory.get_logger().info("Initialized Correlation Window")
         self.window = tk.Toplevel(master)
         self.window.configure(bg='white')
         self.window.grab_set()
@@ -92,4 +94,4 @@ class CorrelationWindow:
 
         self.bf.columnconfigure(0, weight=1)
         self.bf.rowconfigure(0, weight=1)
-        self.bf.grid(row=2, column=0, sticky="WENS", pady=(0, 20), padx=50)
+        self.bf.grid(row=2, column=0, sticky="NESW", pady=(0, 20), padx=50)
