@@ -1,0 +1,15 @@
+[10-Aug-23 11:35:44] CRITICAL [BaseLogger.py.hello_logger:32] Hello critical
+[10-Aug-23 11:35:44] WARNING [BaseLogger.py.hello_logger:33] Hello warning
+[10-Aug-23 13:20:14] INFO [MainWindow.py.MainWindow:14]  Inside module 1
+[10-Aug-23 13:20:21] INFO [MainWindow.py.initialize_load_data_set_window:60] Initializing Load Data Set Window
+[10-Aug-23 13:24:03] INFO [MainWindow.py.MainWindow:14]  Inside module 1
+[10-Aug-23 13:24:06] INFO [MainWindow.py.initialize_load_data_set_window:60] Initializing Load Data Set Window
+[10-Aug-23 13:24:22] INFO [MainWindow.py.initialize_correlation_window:76] Initializing correlation window
+[10-Aug-23 13:27:22] INFO [MainWindow.py.MainWindow:13] Inside Main Window!
+[10-Aug-23 13:27:26] INFO [MainWindow.py.initialize_load_data_set_window:59] Initializing Load Data Set Window
+[10-Aug-23 13:27:36] INFO [MainWindow.py.initialize_mean_median_mode_window:67] Initializing Mean/Median/Mode Window
+[10-Aug-23 13:27:36] INFO [MeanMedianModeWindow.py.__init__:8] Inside Main Window!
+[10-Aug-23 13:35:10] INFO [MainWindow.py.MainWindow:13] Inside Main Window!
+[10-Aug-23 13:35:12] INFO [MainWindow.py.initialize_load_data_set_window:59] Initializing Load Data Set Window
+[10-Aug-23 13:42:01] INFO [MainWindow.py.MainWindow:14] Inside Main Window!
+[10-Aug-23 13:42:06] INFO [MainWindow.py.initialize_load_data_set_window:64] Initializing Load Data Set Window
