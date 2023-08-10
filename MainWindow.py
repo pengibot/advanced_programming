@@ -16,7 +16,6 @@ class MainWindow:
     """
 
     def __init__(self, master=None):
-        LoggerFactory.get_logger().info("Starting Application")
 
         # Setting master window to be able to navigate
         self.master = master
@@ -107,17 +106,22 @@ class MainWindow:
 
 
 def main():
-    window = tk.Tk()
+    """
+        The execution point for the program file
+    """
+    LoggerFactory.get_logger().info("Starting Application")
+    window = tk.Tk()  # Display the root window and manage all other components
     window.configure(bg='white')
     window.title("Advanced Programming")
     window.geometry("593x300")
-    window.resizable(False, False)
-    photo = tk.PhotoImage(file ="images/Logo.png")
-    window.iconphoto(False, photo)
+    window.resizable(False, False)  # Preventing windows from being resized
+    photo = tk.PhotoImage(file="images/Logo.png")
+    window.iconphoto(False, photo)  # Adding icon for window
     MainWindow(window)
     window.mainloop()
     LoggerFactory.get_logger().info("Exiting Application")
 
 
+# Execute code when the file is run as a script, but not when it's imported
 if __name__ == '__main__':
     main()
