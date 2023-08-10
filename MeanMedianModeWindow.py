@@ -9,3 +9,5 @@ class MeanMedianModeWindow:
         self.window = tk.Toplevel(master)
         self.window.grab_set()
         self.window.title("Mean/Median/Mode")
+        icon = tk.PhotoImage(file="images/MeanMedianMode.png")
+        self.window.iconphoto(False, icon)

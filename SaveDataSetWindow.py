@@ -13,6 +13,8 @@ class SaveDataSetWindow:
         self.window.title("Save Data Set")
         self.window.geometry("544x219")
         self.window.resizable(False, False)
+        save_image = tk.PhotoImage(file="images/Save.png")
+        self.window.iconphoto(False, save_image)
         self.master = master
         self.filepath = tk.StringVar()
 

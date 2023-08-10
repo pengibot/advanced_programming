@@ -15,6 +15,8 @@ class CorrelationWindow:
         self.window.configure(bg='white')
         self.window.grab_set()
         self.window.title("Correlation")
+        icon = tk.PhotoImage(file="images/Correlation.png")
+        self.window.iconphoto(False, icon)
         self.master = master
 
         self.tf = tk.Frame(self.window, bg="white")

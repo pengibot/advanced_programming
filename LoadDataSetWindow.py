@@ -13,6 +13,8 @@ class LoadDataSetWindow:
         self.window.title("Load Data Set")
         self.window.geometry("544x271")
         self.window.resizable(False, False)
+        photo = tk.PhotoImage(file="images/Load.png")
+        self.window.iconphoto(False, photo)
         self.master = master
         self.filepath1 = tk.StringVar()
         self.filepath2 = tk.StringVar()
