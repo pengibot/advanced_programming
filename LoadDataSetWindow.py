@@ -19,7 +19,7 @@ class LoadDataSetWindow:
 
         self.tf = tk.Frame(self.window, bg='white')
 
-        self.loadImage = PhotoImage(file='Load.png')
+        self.loadImage = PhotoImage(file='images/Load.png')
         self.img_label = Label(self.tf, image=self.loadImage, bg='white')
         self.img_label.grid(row=0, column=0, padx=(20, 5))
 
@@ -34,8 +34,8 @@ class LoadDataSetWindow:
 
         self.mf = tk.Frame(self.window, bg='white')
 
-        folderImage1 = PhotoImage(file='Folder.png')
-        folderImage2 = PhotoImage(file='Folder.png')
+        folderImage1 = PhotoImage(file='images/Folder.png')
+        folderImage2 = PhotoImage(file='images/Folder.png')
         # img_label = Label(image=folderImage)
 
         self.label2 = tk.Label(self.mf, text="Broadcast Info File:", font=('Aerial', 11), bg='white')

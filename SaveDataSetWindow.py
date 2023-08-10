@@ -18,7 +18,7 @@ class SaveDataSetWindow:
 
         self.tf = tk.Frame(self.window, bg='white')
 
-        self.loadImage = PhotoImage(file='Save.png')
+        self.loadImage = PhotoImage(file='images/Save.png')
         self.img_label = Label(self.tf, image=self.loadImage, bg='white')
         self.img_label.grid(row=0, column=0, padx=(20, 5))
 
@@ -32,7 +32,7 @@ class SaveDataSetWindow:
 
         self.mf = tk.Frame(self.window, bg='white')
 
-        folderImage = PhotoImage(file='Folder.png')
+        folderImage = PhotoImage(file='images/Folder.png')
         # img_label = Label(image=folderImage)
 
         self.label2 = tk.Label(self.mf, text="Save Location", font=('Aerial', 11), bg='white')

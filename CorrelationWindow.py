@@ -21,7 +21,7 @@ class CorrelationWindow:
         self.tf.columnconfigure(0, weight=1)
         self.tf.rowconfigure(0, weight=1)
 
-        self.correlationImage = tk.PhotoImage(file='Correlation.png')
+        self.correlationImage = tk.PhotoImage(file='images/Correlation.png')
         self.img_label = tk.Label(self.tf, image=self.correlationImage, anchor="w", justify="left", bg="white")
         self.img_label.image = self.correlationImage
         self.img_label.grid(row=0, column=0, padx=(20, 5), sticky='w')
