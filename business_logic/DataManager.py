@@ -1,6 +1,6 @@
 import json
-
 import pandas as pd
+import os
 
 from utils import LoggerFactory
 from utils.NaNConverter import NaNConverter
@@ -8,6 +8,7 @@ from utils.NaNConverter import NaNConverter
 
 class DataManager:
     data_frame = None
+    json_file_name = "temp.json"
 
     def get_data_frame(self):
         return self.data_frame
@@ -43,25 +44,46 @@ class DataManager:
         with open(jsonFile, 'w') as file:
             json.dump(data, file, indent=4)
 
-    def read_in_csv_data(self, transmitterInfoFilename, broadcastInfoFilename):
+    def read_in_csv_data(self, transmitter_info_filename, broadcast_info_filename):
         try:
             # Read the data from the CSV files
-            transmitter_info = pd.read_csv(transmitterInfoFilename, encoding='iso-8859-1')
-            LoggerFactory.get_logger().info(f"Successfully read {transmitterInfoFilename} file into a DataFrame")
-            broadcast_info = pd.read_csv(broadcastInfoFilename, encoding='iso-8859-1')
-            LoggerFactory.get_logger().info(f"Successfully read {broadcastInfoFilename} file into a DataFrame")
+            transmitter_info = pd.read_csv(transmitter_info_filename, encoding='iso-8859-1')
+            LoggerFactory.get_logger().info(f"Successfully read {transmitter_info_filename} file into a DataFrame")
+            broadcast_info = pd.read_csv(broadcast_info_filename, encoding='iso-8859-1')
+            LoggerFactory.get_logger().info(f"Successfully read {broadcast_info_filename} file into a DataFrame")
 
             # Merge the datasets on 'id'
             LoggerFactory.get_logger().info(f"Starting merge of DataFrames into one, based on the 'id' field")
             self.data_frame = pd.merge(transmitter_info, broadcast_info, on='id')
             LoggerFactory.get_logger().info(f"Successfully merged DataFrames into one")
+            self.clean_csv_json_data()
             return True
         except Exception as error:
             LoggerFactory.get_logger().error(f"An error occurred whilst merging DataFrames: {error}")
             return False
 
-    def save_data_frame_to_json(self, json_file_name):
+    def read_in_json_data(self, json_file):
+        try:
+            LoggerFactory.get_logger().info(f"Starting to read in .json file {json_file}")
+            self.data_frame = pd.read_json(json_file)
+            LoggerFactory.get_logger().info(f"Finished reading in .json file to Data Frame")
+            return True
+        except Exception as error:
+            LoggerFactory.get_logger().error(f"An error occurred whilst reading .json file to Data Frame: {error}")
+            return False
 
+    def save_json_file(self, json_file_name):
+        try:
+            LoggerFactory.get_logger().info(f"Writing JSON to file {json_file_name}")
+            with open(json_file_name, 'w') as f:
+                json.dump(json.loads(self.data_frame.to_json(orient='records')), f, indent=4)
+            LoggerFactory.get_logger().info(f"File written Successfully")
+            return True
+        except Exception as error:
+            return False
+
+
+    def save_data_frame_to_json(self, json_file_name):
         try:
             # Convert the DataFrame into a nested dictionary
             nested_dict = []
@@ -111,20 +133,15 @@ class DataManager:
             # Write the JSON string to a file
             with open(json_file_name, 'w') as file:
                 LoggerFactory.get_logger().info(f"Writing JSON to file {json_file_name}")
-                file.write(nested_json)#
+                file.write(nested_json)
             LoggerFactory.get_logger().info(f"File written Successfully")
             return True
         except Exception as error:
             LoggerFactory.get_logger().error(f"An error occurred whilst saving Data Frame to .json File: {error}")
             return False
 
-
-# transmitterInfoFile = input("Enter Transmitter Info File> ")
-# broadcastInfoFile = input("Enter Broadcast Info File> ")
-# print("Converting .csv files into a single .json file")
-# convert_csv_to_json('TxAntennaDAB.csv', 'TxParamsDAB.csv', 'nested_data.json')
-# print("Removing unwanted NGR\'s")
-# remove_unwanted_NGRs({"NZ02553847", "SE213515", "NT05399374", "NT25265908"}, 'nested_data.json')
-# print("Extracting EID data and Renaming Headers")
-# extract_EID_data(["C18A", "C18F", "C188"], 'nested_data.json')
-# print("All processes completed successfully")
+    def clean_csv_json_data(self):
+        self.save_data_frame_to_json(self.json_file_name)
+        self.remove_unwanted_NGRs({"NZ02553847", "SE213515", "NT05399374", "NT25265908"}, self.json_file_name)
+        self.extract_EID_data(["C18A", "C18F", "C188"], self.json_file_name)
+        self.read_in_json_data(self.json_file_name)

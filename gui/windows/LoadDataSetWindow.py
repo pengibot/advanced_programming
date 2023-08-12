@@ -11,7 +11,8 @@ class LoadDataSetWindow:
     data_manager = None
     set_state_of_buttons = None
 
-    def __init__(self, master, data_manager):
+    def __init__(self, master, data_manager, set_state_of_buttons):
+        self.set_state_of_buttons = set_state_of_buttons
         self.data_manager = data_manager
         LoggerFactory.get_logger().info("Initialized Load Data Set Window")
         self.window = tk.Toplevel(master)  # Used to display dialog on top of Main Window
@@ -90,7 +91,7 @@ class LoadDataSetWindow:
         """
             Action to select file name and filepath
         """
-        file_name = filedialog.asksaveasfilename(defaultextension=".json",
+        file_name = filedialog.askopenfilename(defaultextension=".json",
                                                  filetypes=(("JSON Files", "*.json"), ("All Files", "*.*")),
                                                  initialdir=".")
         LoggerFactory.get_logger().info(f"Selected load file location as {file_name}")
@@ -102,7 +103,7 @@ class LoadDataSetWindow:
         """
 
         LoggerFactory.get_logger().info(f"Loading file as {self.load_file_path.get()}")
-        result = self.data_manager.read_in_json_data(self.file_path.get())
+        result = self.data_manager.read_in_json_data(self.load_file_path.get())
         if result:
             self.set_state_of_buttons()
             self.window.destroy()

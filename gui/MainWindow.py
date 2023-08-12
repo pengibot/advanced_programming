@@ -46,12 +46,12 @@ class MainWindow:
         functions_frame.grid(row=0, column=1, pady=5, padx=10, sticky=tk.E)
 
         # Create button and set command to Import CSV Files
-        self.import_csv_files_button = tk.Button(functions_frame, text='Import CSV Files', width=25, pady=5,
+        self.import_csv_files_button = tk.Button(functions_frame, text='Load & Clean Data Set', width=25, pady=5,
                                                  command=self.initialize_import_csv_files_window)
         self.import_csv_files_button.grid(row=0, column=0, pady=7.5, padx=7.5)
 
         # Create button and set command to Load Data Sets
-        self.load_data_set_button = tk.Button(functions_frame, text='Load Data Set', width=25, pady=5,
+        self.load_data_set_button = tk.Button(functions_frame, text='Load Prepared Data Set', width=25, pady=5,
                                               command=self.initialize_load_data_set_window)
         self.load_data_set_button.grid(row=1, column=0, pady=7.5, padx=7.5)
 

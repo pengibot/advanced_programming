@@ -102,7 +102,7 @@ class SaveDataSetWindow:
         """
 
         LoggerFactory.get_logger().info(f"Saving file as {self.save_file_path.get()}")
-        result = self.data_manager.save_data_frame_to_json(self.save_file_path.get())
+        result = self.data_manager.save_json_file(self.save_file_path.get())
         if result:
             self.window.destroy()
         else:
