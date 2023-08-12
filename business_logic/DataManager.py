@@ -1,6 +1,7 @@
 import json
 import pandas as pd
 import os
+import statistics
 
 from utils import LoggerFactory
 from utils.NaNConverter import NaNConverter
@@ -145,3 +146,35 @@ class DataManager:
         self.remove_unwanted_NGRs({"NZ02553847", "SE213515", "NT05399374", "NT25265908"}, self.json_file_name)
         self.extract_EID_data(["C18A", "C18F", "C188"], self.json_file_name)
         self.read_in_json_data(self.json_file_name)
+
+    def generate_data_for_in_use_erp_total(self):
+        # data_frame = pd.read_json("../temp.json")
+        broadcast_info_df = pd.DataFrame(self.data_frame["broadcast_info"])
+
+        erp_total = []
+        for index in range(0, len(broadcast_info_df)):
+            broadcast_dict = broadcast_info_df["broadcast_info"][index]
+            # print(broadcast_info_df)
+            try:
+                eid = broadcast_dict["EID"]
+                if type(eid) == dict:
+                    key = list(dict(eid).keys())[0]
+                    if broadcast_dict["EID"][key]["Site Height"] > 75 and int(broadcast_dict["Date"][-4:]) >= 2001:
+                        erp_total.append(broadcast_dict["EID"][key]["Power (kW)"])
+
+            except:
+                LoggerFactory.get_logger().info(f"Unable to get EID")
+
+
+        print(erp_total)
+        counter = 0
+        while counter != len(erp_total):
+            erp_total[counter] = erp_total[counter].replace(".", "")
+            erp_total[counter] = float(erp_total[counter].replace(",", "."))
+            counter += 1
+
+        print(f"Mean = {statistics.mean(erp_total)}")
+        print(f"Median = {statistics.median(erp_total)}")
+        print(f"Mode = {statistics.mode(erp_total)}")
+
+        return statistics.mean(erp_total), statistics.median(erp_total), statistics.mode(erp_total)
