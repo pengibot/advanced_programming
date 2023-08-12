@@ -4,7 +4,7 @@ import tkinter as tk
 
 class TextHandler(logging.Handler):
     """
-        This class logs to a Text widget
+        This class allows logging to a Text widget.
     """
 
     def __init__(self, text):

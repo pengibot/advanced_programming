@@ -9,7 +9,7 @@ class LoadDataSetWindow:
         Window to load a data set from .json file.
     """
 
-    def __init__(self, master=None):
+    def __init__(self, master, data_manager):
         LoggerFactory.get_logger().info("Initialized Load Data Set Window")
         self.window = tk.Toplevel(master)  # Used to display dialog on top of Main Window
         self.window.configure(bg='white')

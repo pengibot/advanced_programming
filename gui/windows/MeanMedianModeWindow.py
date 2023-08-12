@@ -4,7 +4,7 @@ from utils.LoggerFactory import LoggerFactory
 
 
 class MeanMedianModeWindow:
-    def __init__(self, master=None):
+    def __init__(self, master, data_manager):
         LoggerFactory.get_logger().info("Initialized Mean/Median/Mode Window")
         self.window = tk.Toplevel(master)
         self.window.grab_set()

@@ -9,7 +9,7 @@ class SaveDataSetWindow:
         Window to save the data set to a specific file.
     """
 
-    def __init__(self, master=None):
+    def __init__(self, master, data_manager):
         LoggerFactory.get_logger().info("Initialized Save Data Set Window")
         self.window = tk.Toplevel(master)  # Used to display dialog on top of Main Window
         self.window.configure(bg='white')

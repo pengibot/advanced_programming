@@ -9,7 +9,7 @@ from utils.LoggerFactory import LoggerFactory
 
 
 class CorrelationWindow:
-    def __init__(self, master=None):
+    def __init__(self, master, data_manager):
         LoggerFactory.get_logger().info("Initialized Correlation Window")
         self.window = tk.Toplevel(master)
         self.window.configure(bg='white')

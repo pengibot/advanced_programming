@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog, Label, PhotoImage
+from tkinter import filedialog, Label, PhotoImage, messagebox
 
 from utils.LoggerFactory import LoggerFactory
 
@@ -10,8 +10,10 @@ class ImportCSVFilesWindow:
     """
 
     # TODO: Add Validation of files to ensure they can be parsed.
+    data_manager = None
 
-    def __init__(self, master=None):
+    def __init__(self, master, data_manager):
+        self.data_manager = data_manager
         LoggerFactory.get_logger().info("Initialized Import CSV Files Window")
         self.window = tk.Toplevel(master)  # Used to display dialog on top of Main Window
         self.window.grab_set()  # Grabs all events for the application
@@ -135,7 +137,11 @@ class ImportCSVFilesWindow:
         """
         LoggerFactory.get_logger().info(f"Importing file 1 as {self.file_path_1.get()}")
         LoggerFactory.get_logger().info(f"Importing file 2 as {self.file_path_2.get()}")
-        self.window.destroy()
+        result = self.data_manager.read_in_csv_data(self.file_path_1.get(), self.file_path_2.get())
+        if result:
+            self.window.destroy()
+        else:
+            messagebox.showerror('Error', 'Could not load in files')
 
     def cancel(self):
         """

@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import scrolledtext
 
+from business_logic.DataManager import DataManager
 from gui.windows.CorrelationWindow import CorrelationWindow
 from gui.windows.GraphWindow import GraphWindow
 from gui.windows.ImportCSVFilesWindow import ImportCSVFilesWindow
@@ -18,7 +19,7 @@ class MainWindow:
     """
 
     # Flag that gets set to true once a dataset is successfully loaded, to enable/disable buttons
-    is_dataset_loaded = False
+    data_manager = DataManager()
 
     def __init__(self, master=None):
         # Setting master window to be able to navigate
@@ -77,10 +78,12 @@ class MainWindow:
         self.set_state_of_buttons()
 
     def set_state_of_buttons(self):
-        self.save_data_set_button["state"] = "normal" if self.is_dataset_loaded else "disabled"
-        self.load_mean_median_mode_button["state"] = "normal" if self.is_dataset_loaded else "disabled"
-        self.display_graph_button["state"] = "normal" if self.is_dataset_loaded else "disabled"
-        self.display_correlation_button["state"] = "normal" if self.is_dataset_loaded else "disabled"
+        dataset_loaded = self.data_manager.get_data_frame() is not None
+
+        self.save_data_set_button["state"] = "normal" if dataset_loaded else "disabled"
+        self.load_mean_median_mode_button["state"] = "normal" if dataset_loaded else "disabled"
+        self.display_graph_button["state"] = "normal" if dataset_loaded else "disabled"
+        self.display_correlation_button["state"] = "normal" if dataset_loaded else "disabled"
 
     def initialize_import_csv_files_window(self):
         """
@@ -88,7 +91,7 @@ class MainWindow:
         """
 
         LoggerFactory.get_logger().info("Initializing Import CSV Files Window")
-        ImportCSVFilesWindow(self.master)
+        ImportCSVFilesWindow(self.master, self.data_manager)
         self.is_dataset_loaded = True  # TODO: Temporary fix for assuming dataset has been loaded
         self.set_state_of_buttons()
 
@@ -98,7 +101,7 @@ class MainWindow:
         """
 
         LoggerFactory.get_logger().info("Initializing Load Data Set Window")
-        LoadDataSetWindow(self.master)
+        LoadDataSetWindow(self.master, self.data_manager)
         self.is_dataset_loaded = True  # TODO: Temporary fix for assuming dataset has been loaded
         self.set_state_of_buttons()
 
@@ -108,7 +111,7 @@ class MainWindow:
         """
 
         LoggerFactory.get_logger().info("Initializing Save Data Set Window")
-        SaveDataSetWindow(self.master)
+        SaveDataSetWindow(self.master, self.data_manager)
 
     def initialize_mean_median_mode_window(self):
         """
@@ -116,7 +119,7 @@ class MainWindow:
         """
 
         LoggerFactory.get_logger().info("Initializing Mean/Median/Mode Window")
-        MeanMedianModeWindow(self.master)
+        MeanMedianModeWindow(self.master, self.data_manager)
 
     def initialize_graph_window(self):
         """
@@ -124,7 +127,7 @@ class MainWindow:
         """
 
         LoggerFactory.get_logger().info("Initializing Graph Window")
-        GraphWindow(self.master)
+        GraphWindow(self.master, self.data_manager)
 
     def initialize_correlation_window(self):
         """
@@ -132,4 +135,4 @@ class MainWindow:
         """
 
         LoggerFactory.get_logger().info("Initializing correlation window")
-        CorrelationWindow(self.master)
+        CorrelationWindow(self.master, self.data_manager)
