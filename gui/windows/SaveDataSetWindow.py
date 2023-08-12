@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog, Label, PhotoImage
+from tkinter import filedialog, Label, PhotoImage, messagebox
 
 from utils.LoggerFactory import LoggerFactory
 
@@ -9,7 +9,10 @@ class SaveDataSetWindow:
         Window to save the data set to a specific file.
     """
 
+    data_manager = None
+
     def __init__(self, master, data_manager):
+        self.data_manager = data_manager
         LoggerFactory.get_logger().info("Initialized Save Data Set Window")
         self.window = tk.Toplevel(master)  # Used to display dialog on top of Main Window
         self.window.configure(bg='white')
@@ -99,7 +102,11 @@ class SaveDataSetWindow:
         """
 
         LoggerFactory.get_logger().info(f"Saving file as {self.save_file_path.get()}")
-        self.window.destroy()
+        result = self.data_manager.save_data_frame_to_json(self.save_file_path.get())
+        if result:
+            self.window.destroy()
+        else:
+            messagebox.showerror('Error', 'Could not save file')
 
     def cancel(self):
         """

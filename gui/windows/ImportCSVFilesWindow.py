@@ -11,9 +11,11 @@ class ImportCSVFilesWindow:
 
     # TODO: Add Validation of files to ensure they can be parsed.
     data_manager = None
+    set_state_of_buttons = None
 
-    def __init__(self, master, data_manager):
+    def __init__(self, master, data_manager, set_state_of_buttons):
         self.data_manager = data_manager
+        self.set_state_of_buttons = set_state_of_buttons
         LoggerFactory.get_logger().info("Initialized Import CSV Files Window")
         self.window = tk.Toplevel(master)  # Used to display dialog on top of Main Window
         self.window.grab_set()  # Grabs all events for the application
@@ -139,6 +141,7 @@ class ImportCSVFilesWindow:
         LoggerFactory.get_logger().info(f"Importing file 2 as {self.file_path_2.get()}")
         result = self.data_manager.read_in_csv_data(self.file_path_1.get(), self.file_path_2.get())
         if result:
+            self.set_state_of_buttons()
             self.window.destroy()
         else:
             messagebox.showerror('Error', 'Could not load in files')

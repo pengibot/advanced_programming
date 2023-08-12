@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog, Label, PhotoImage
+from tkinter import filedialog, Label, PhotoImage, messagebox
 
 from utils.LoggerFactory import LoggerFactory
 
@@ -8,8 +8,11 @@ class LoadDataSetWindow:
     """
         Window to load a data set from .json file.
     """
+    data_manager = None
+    set_state_of_buttons = None
 
     def __init__(self, master, data_manager):
+        self.data_manager = data_manager
         LoggerFactory.get_logger().info("Initialized Load Data Set Window")
         self.window = tk.Toplevel(master)  # Used to display dialog on top of Main Window
         self.window.configure(bg='white')
@@ -99,7 +102,12 @@ class LoadDataSetWindow:
         """
 
         LoggerFactory.get_logger().info(f"Loading file as {self.load_file_path.get()}")
-        self.window.destroy()
+        result = self.data_manager.read_in_json_data(self.file_path.get())
+        if result:
+            self.set_state_of_buttons()
+            self.window.destroy()
+        else:
+            messagebox.showerror('Error', 'Could not load file contents')
 
     def cancel(self):
         """

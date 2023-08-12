@@ -7,8 +7,6 @@ from utils.NaNConverter import NaNConverter
 
 
 class DataManager:
-
-
     data_frame = None
 
     def get_data_frame(self):
@@ -25,7 +23,6 @@ class DataManager:
         # Write the data back to the JSON file
         with open(jsonFile, 'w') as file:
             json.dump(data, file, indent=4)
-
 
     def extract_EID_data(self, multiplexes, jsonFile):
         # Load the data from the JSON file
@@ -46,7 +43,6 @@ class DataManager:
         with open(jsonFile, 'w') as file:
             json.dump(data, file, indent=4)
 
-
     def read_in_csv_data(self, transmitterInfoFilename, broadcastInfoFilename):
         try:
             # Read the data from the CSV files
@@ -64,56 +60,63 @@ class DataManager:
             LoggerFactory.get_logger().error(f"An error occurred whilst merging DataFrames: {error}")
             return False
 
+    def save_data_frame_to_json(self, json_file_name):
 
-
-    def convert_data_frame_to_json(self, data_frame, json_file_name):
-
-        # Convert the DataFrame into a nested dictionary
-        nested_dict = []
-        for index, row in data_frame.iterrows():
-            temp = {
-                "id": row['id'],
-                "transmitter_info": {
-                    "NGR": row['NGR'],
-                    "Longitude/Latitude": row['Longitude/Latitude'],
-                    "Site Height": row['Site Height'],
-                    "In-Use Ae Ht": row['In-Use Ae Ht'],
-                    "In-Use ERP Total": row['In-Use ERP Total'],
-                    "Dir Max ERP": row['Dir Max ERP'],
-                    "Radiation Pattern":
-                        {str(i * 10): row[str(i * 10)] for i in range(36)},
-                    "Lat": row['Lat'],
-                    "Long": row['Long']
-                },
-                "broadcast_info": {
-                    "Date": row['Date'],
-                    "Ensemble": row['Ensemble'],
-                    "Licence": row['Licence'],
-                    "Ensemble Area": row['Ensemble Area'],
-                    "EID": row['EID'],
-                    "Transmitter Area": row['Transmitter Area'],
-                    "Site": row['Site'],
-                    "Freq.": row['Freq.'],
-                    "Block": row['Block'],
-                    "TII Main Id (Hex)": row['TII Main Id (Hex)'],
-                    "TII Sub Id (Hex)": row['TII Sub Id (Hex)'],
-                    "Services": [
-                        {f'Serv Label{i} ': row[f'Serv Label{i} '],
-                         f'SId {i} (Hex)': row[f'SId {i} (Hex)'],
-                         f'LSN {i} (Hex)': row[f'LSN {i} (Hex)']}
-                        for i in range(1, 33) if pd.notna(row[f'Serv Label{i} '])],
-                    "Lat": row['Lat'],
-                    "Long": row['Long']
+        try:
+            # Convert the DataFrame into a nested dictionary
+            nested_dict = []
+            for index, row in self.data_frame.iterrows():
+                temp = {
+                    "id": row['id'],
+                    "transmitter_info": {
+                        "NGR": row['NGR'],
+                        "Longitude/Latitude": row['Longitude/Latitude'],
+                        "Site Height": row['Site Height'],
+                        "In-Use Ae Ht": row['In-Use Ae Ht'],
+                        "In-Use ERP Total": row['In-Use ERP Total'],
+                        "Dir Max ERP": row['Dir Max ERP'],
+                        "Radiation Pattern":
+                            {str(i * 10): row[str(i * 10)] for i in range(36)},
+                        "Lat": row['Lat'],
+                        "Long": row['Long']
+                    },
+                    "broadcast_info": {
+                        "Date": row['Date'],
+                        "Ensemble": row['Ensemble'],
+                        "Licence": row['Licence'],
+                        "Ensemble Area": row['Ensemble Area'],
+                        "EID": row['EID'],
+                        "Transmitter Area": row['Transmitter Area'],
+                        "Site": row['Site'],
+                        "Freq.": row['Freq.'],
+                        "Block": row['Block'],
+                        "TII Main Id (Hex)": row['TII Main Id (Hex)'],
+                        "TII Sub Id (Hex)": row['TII Sub Id (Hex)'],
+                        "Services": [
+                            {f'Serv Label{i} ': row[f'Serv Label{i} '],
+                             f'SId {i} (Hex)': row[f'SId {i} (Hex)'],
+                             f'LSN {i} (Hex)': row[f'LSN {i} (Hex)']}
+                            for i in range(1, 33) if pd.notna(row[f'Serv Label{i} '])],
+                        "Lat": row['Lat'],
+                        "Long": row['Long']
+                    }
                 }
-            }
-            nested_dict.append(temp)
+                LoggerFactory.get_logger().info(f"Adding entry with ID {row['id']} to dictionary")
+                nested_dict.append(temp)
 
-        # Convert the nested dictionary into a JSON string
-        nested_json = json.dumps(nested_dict, indent=4, cls=NaNConverter)
+            # Convert the nested dictionary into a JSON string
+            LoggerFactory.get_logger().info(f"Converting nested dictionary into a JSON string with indentation")
+            nested_json = json.dumps(nested_dict, indent=4, cls=NaNConverter)
 
-        # Write the JSON string to a file
-        with open(json_file_name, 'w') as file:
-            file.write(nested_json)
+            # Write the JSON string to a file
+            with open(json_file_name, 'w') as file:
+                LoggerFactory.get_logger().info(f"Writing JSON to file {json_file_name}")
+                file.write(nested_json)#
+            LoggerFactory.get_logger().info(f"File written Successfully")
+            return True
+        except Exception as error:
+            LoggerFactory.get_logger().error(f"An error occurred whilst saving Data Frame to .json File: {error}")
+            return False
 
 
 # transmitterInfoFile = input("Enter Transmitter Info File> ")

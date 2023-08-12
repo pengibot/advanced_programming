@@ -21,7 +21,7 @@ class MainWindow:
     # Flag that gets set to true once a dataset is successfully loaded, to enable/disable buttons
     data_manager = DataManager()
 
-    def __init__(self, master=None):
+    def __init__(self, master):
         # Setting master window to be able to navigate
         self.master = master
         self.master.configure(bg='white')
@@ -91,9 +91,7 @@ class MainWindow:
         """
 
         LoggerFactory.get_logger().info("Initializing Import CSV Files Window")
-        ImportCSVFilesWindow(self.master, self.data_manager)
-        self.is_dataset_loaded = True  # TODO: Temporary fix for assuming dataset has been loaded
-        self.set_state_of_buttons()
+        ImportCSVFilesWindow(self.master, self.data_manager, self.set_state_of_buttons)
 
     def initialize_load_data_set_window(self):
         """
@@ -101,8 +99,7 @@ class MainWindow:
         """
 
         LoggerFactory.get_logger().info("Initializing Load Data Set Window")
-        LoadDataSetWindow(self.master, self.data_manager)
-        self.is_dataset_loaded = True  # TODO: Temporary fix for assuming dataset has been loaded
+        LoadDataSetWindow(self.master, self.data_manager, self.set_state_of_buttons)
         self.set_state_of_buttons()
 
     def initialize_save_data_set_window(self):
