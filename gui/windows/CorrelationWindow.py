@@ -89,11 +89,11 @@ class CorrelationWindow:
         canvas.draw()
         canvas.get_tk_widget().grid(row=1, column=0, padx=(30, 0), pady=(5, 0))
 
-        self.bf = tk.Frame(self.window, bg='white')
+        self.bottom_frame = tk.Frame(self.window, bg='white')
 
-        self.close_button = tk.Button(self.bf, text="Close", command=self.window.destroy, padx=50, pady=5)
+        self.close_button = tk.Button(self.bottom_frame, text="Close", command=self.window.destroy, padx=50, pady=5)
         self.close_button.grid(row=0, column=0)
 
-        self.bf.columnconfigure(0, weight=1)
-        self.bf.rowconfigure(0, weight=1)
-        self.bf.grid(row=2, column=0, sticky="NESW", pady=(0, 20), padx=50)
+        self.bottom_frame.columnconfigure(0, weight=1)
+        self.bottom_frame.rowconfigure(0, weight=1)
+        self.bottom_frame.grid(row=2, column=0, sticky="NESW", pady=(0, 20), padx=50)
