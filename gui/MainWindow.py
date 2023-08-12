@@ -1,13 +1,15 @@
 import tkinter as tk
 from tkinter import scrolledtext
 
-from CorrelationWindow import CorrelationWindow
-from GraphWindow import GraphWindow
-from LoadDataSetWindow import LoadDataSetWindow
-from LoggerFactory import LoggerFactory
-from MeanMedianModeWindow import MeanMedianModeWindow
-from SaveDataSetWindow import SaveDataSetWindow
-from TextHandler import TextHandler
+from gui.windows.CorrelationWindow import CorrelationWindow
+from gui.windows.GraphWindow import GraphWindow
+from gui.windows.ImportCSVFilesWindow import ImportCSVFilesWindow
+from gui.windows.LoadDataSetWindow import LoadDataSetWindow
+from gui.windows.MeanMedianModeWindow import MeanMedianModeWindow
+from gui.windows.SaveDataSetWindow import SaveDataSetWindow
+
+from utils import LoggerFactory
+from utils import TextHandler
 
 
 class MainWindow:
@@ -15,8 +17,10 @@ class MainWindow:
         Main window that will allow the user to load certain functions and see the logs
     """
 
-    def __init__(self, master=None):
+    # Flag that gets set to true once a dataset is successfully loaded, to enable/disable buttons
+    is_dataset_loaded = False
 
+    def __init__(self, master=None):
         # Setting master window to be able to navigate
         self.master = master
         self.master.configure(bg='white')
@@ -28,7 +32,8 @@ class MainWindow:
         logs_frame.grid(row=0, column=0, padx=5, sticky="NESW")
 
         # Component to hold logs visible to the user
-        self.scrolled_text = scrolledtext.ScrolledText(logs_frame, wrap=tk.WORD, width=42, height=17, borderwidth=0)
+        self.scrolled_text = scrolledtext.ScrolledText(logs_frame, wrap=tk.WORD, width=60, height=20, borderwidth=0,
+                                                       font="Arial 10")
         self.scrolled_text.grid(column=0, row=0, sticky="NESW")
 
         # Create a Text Handler to display logs to the user and add it to the Logger
@@ -39,30 +44,53 @@ class MainWindow:
         functions_frame = tk.LabelFrame(self.master, text='Functions', bg='white')
         functions_frame.grid(row=0, column=1, pady=5, padx=10, sticky=tk.E)
 
-        # Create button and set command to Load Data Set
+        # Create button and set command to Import CSV Files
+        self.import_csv_files_button = tk.Button(functions_frame, text='Import CSV Files', width=25, pady=5,
+                                                 command=self.initialize_import_csv_files_window)
+        self.import_csv_files_button.grid(row=0, column=0, pady=7.5, padx=7.5)
+
+        # Create button and set command to Load Data Sets
         self.load_data_set_button = tk.Button(functions_frame, text='Load Data Set', width=25, pady=5,
                                               command=self.initialize_load_data_set_window)
-        self.load_data_set_button.grid(row=0, column=0, pady=7.5, padx=7.5)
+        self.load_data_set_button.grid(row=1, column=0, pady=7.5, padx=7.5)
 
         # Create button and set command to Save Data Set
         self.save_data_set_button = tk.Button(functions_frame, text='Save Data Set', width=25, pady=5,
                                               command=self.initialize_save_data_set_window)
-        self.save_data_set_button.grid(row=1, column=0, pady=7.5, padx=7.5)
+        self.save_data_set_button.grid(row=2, column=0, pady=7.5, padx=7.5)
 
         # Create button and set command to display Mean/Median/Mode
         self.load_mean_median_mode_button = tk.Button(functions_frame, text='Mean/Mode/Median', width=25, pady=5,
                                                       command=self.initialize_mean_median_mode_window)
-        self.load_mean_median_mode_button.grid(row=2, column=0, pady=7.5, padx=7.5)
+        self.load_mean_median_mode_button.grid(row=3, column=0, pady=7.5, padx=7.5)
 
         # Create button and set command to Display Graph
         self.display_graph_button = tk.Button(functions_frame, text='Display Graph', width=25, pady=5,
                                               command=self.initialize_graph_window)
-        self.display_graph_button.grid(row=3, column=0, pady=7.5, padx=7.5)
+        self.display_graph_button.grid(row=4, column=0, pady=7.5, padx=7.5)
 
         # Create button and set command to Display Correlation
         self.display_correlation_button = tk.Button(functions_frame, text='Display Correlation', width=25, pady=5,
                                                     command=self.initialize_correlation_window)
-        self.display_correlation_button.grid(row=4, column=0, pady=10, padx=(7.5, 0))
+        self.display_correlation_button.grid(row=5, column=0, pady=10, padx=(7.5, 0))
+
+        self.set_state_of_buttons()
+
+    def set_state_of_buttons(self):
+        self.save_data_set_button["state"] = "normal" if self.is_dataset_loaded else "disabled"
+        self.load_mean_median_mode_button["state"] = "normal" if self.is_dataset_loaded else "disabled"
+        self.display_graph_button["state"] = "normal" if self.is_dataset_loaded else "disabled"
+        self.display_correlation_button["state"] = "normal" if self.is_dataset_loaded else "disabled"
+
+    def initialize_import_csv_files_window(self):
+        """
+            Action used to load the Import CSV Files Window
+        """
+
+        LoggerFactory.get_logger().info("Initializing Import CSV Files Window")
+        ImportCSVFilesWindow(self.master)
+        self.is_dataset_loaded = True  # TODO: Temporary fix for assuming dataset has been loaded
+        self.set_state_of_buttons()
 
     def initialize_load_data_set_window(self):
         """
@@ -71,6 +99,8 @@ class MainWindow:
 
         LoggerFactory.get_logger().info("Initializing Load Data Set Window")
         LoadDataSetWindow(self.master)
+        self.is_dataset_loaded = True  # TODO: Temporary fix for assuming dataset has been loaded
+        self.set_state_of_buttons()
 
     def initialize_save_data_set_window(self):
         """
@@ -103,25 +133,3 @@ class MainWindow:
 
         LoggerFactory.get_logger().info("Initializing correlation window")
         CorrelationWindow(self.master)
-
-
-def main():
-    """
-        The execution point for the program file
-    """
-    LoggerFactory.get_logger().info("Starting Application")
-    window = tk.Tk()  # Display the root window and manage all other components
-    window.configure(bg='white')
-    window.title("Advanced Programming")
-    window.geometry("593x300")
-    window.resizable(False, False)  # Preventing windows from being resized
-    photo = tk.PhotoImage(file="images/Logo.png")
-    window.iconphoto(False, photo)  # Adding icon for window
-    MainWindow(window)
-    window.mainloop()
-    LoggerFactory.get_logger().info("Exiting Application")
-
-
-# Execute code when the file is run as a script, but not when it's imported
-if __name__ == '__main__':
-    main()

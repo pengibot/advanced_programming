@@ -1,26 +1,26 @@
 import tkinter as tk
 from tkinter import filedialog, Label, PhotoImage
 
-from LoggerFactory import LoggerFactory
+from utils.LoggerFactory import LoggerFactory
 
 
-class LoadDataSetWindow:
+class ImportCSVFilesWindow:
     """
-        Window to load in the data sets. It is responsible for validating the files
+        Window to import the CSV files. It is responsible for validating the files
     """
 
     # TODO: Add Validation of files to ensure they can be parsed.
 
     def __init__(self, master=None):
-        LoggerFactory.get_logger().info("Initialized Load Data Set Window")
+        LoggerFactory.get_logger().info("Initialized Import CSV Files Window")
         self.window = tk.Toplevel(master)  # Used to display dialog on top of Main Window
         self.window.grab_set()  # Grabs all events for the application
         self.window.configure(bg='white')
-        self.window.title("Load Data Set")
+        self.window.title("Import CSV Files")
         self.window.geometry("544x271")
         self.window.resizable(False, False)  # Prevent the user from resizing the window
-        self.photo = tk.PhotoImage(file="images/Load.png")
-        self.window.iconphoto(False, self.photo)  # Add icon for dialog
+        self.import_photo_image = tk.PhotoImage(file="gui/assets/import.png")
+        self.window.iconphoto(False, self.import_photo_image)  # Add icon for dialog
         self.master = master
 
         # Using StringVar to set text values and retrieve them
@@ -30,9 +30,9 @@ class LoadDataSetWindow:
         # Created a frame to group components at the top of the dialog
         self.top_frame = tk.Frame(self.window, bg='white')
 
-        # Adding Load image to top frame
-        self.load_image = PhotoImage(file='images/Load.png')
-        self.image_label = Label(self.top_frame, image=self.load_image, bg='white')
+        # Adding Import image to top frame
+        self.import_image = PhotoImage(file='gui/assets/import.png')
+        self.image_label = Label(self.top_frame, image=self.import_image, bg='white')
         self.image_label.grid(row=0, column=0, padx=(20, 5))
 
         # Adding Instructions label to top frame
@@ -58,12 +58,12 @@ class LoadDataSetWindow:
         self.file_1_text_entry.grid(row=0, column=1)
 
         # Adding Button component to select file 1 input (Broadcast Info File)
-        self.folder_image_1 = PhotoImage(file='images/Folder.png')
-        self.load_file_1_button = tk.Button(self.middle_frame, image=self.folder_image_1, command=self.select_file_1,
-                                            borderwidth=0,
-                                            highlightthickness=0, bg='white')
-        self.load_file_1_button.image = self.folder_image_1
-        self.load_file_1_button.grid(row=0, column=2, padx=5, pady=10)
+        self.folder_image_1 = PhotoImage(file='gui/assets/folder.png')
+        self.import_file_1_button = tk.Button(self.middle_frame, image=self.folder_image_1, command=self.select_file_1,
+                                              borderwidth=0,
+                                              highlightthickness=0, bg='white')
+        self.import_file_1_button.image = self.folder_image_1
+        self.import_file_1_button.grid(row=0, column=2, padx=5, pady=10)
 
         # Adding description to file 2 input (Transmitter Info File)
         self.file_2_description = tk.Label(self.middle_frame, text="Transmitter Info File:", font=('Aerial', 11),
@@ -75,12 +75,12 @@ class LoadDataSetWindow:
         self.file_2_text_entry.grid(row=1, column=1)
 
         # Adding Button component to select file 2 input (Transmitter Info File)
-        self.folder_image_2 = PhotoImage(file='images/Folder.png')
-        self.load_file_2_button = tk.Button(self.middle_frame, image=self.folder_image_2, command=self.select_file_2,
-                                            borderwidth=0,
-                                            highlightthickness=0, bg='white')
-        self.load_file_2_button.image = self.folder_image_2
-        self.load_file_2_button.grid(row=1, column=2, padx=5)
+        self.folder_image_2 = PhotoImage(file='gui/assets/folder.png')
+        self.import_file_2_button = tk.Button(self.middle_frame, image=self.folder_image_2, command=self.select_file_2,
+                                              borderwidth=0,
+                                              highlightthickness=0, bg='white')
+        self.import_file_2_button.image = self.folder_image_2
+        self.import_file_2_button.grid(row=1, column=2, padx=5)
 
         # Adding middle frame to second row in grid
         self.middle_frame.columnconfigure(0, weight=1)
@@ -96,8 +96,8 @@ class LoadDataSetWindow:
         self.cancel_button.grid(row=0, column=0)
 
         # Adding Button component to load files
-        self.load_button = tk.Button(self.bottom_frame, text="Load", command=self.load, padx=50, pady=5)
-        self.load_button.grid(row=0, column=1)
+        self.import_button = tk.Button(self.bottom_frame, text="Import", command=self.load, padx=50, pady=5)
+        self.import_button.grid(row=0, column=1)
 
         # Adding bottom frame to third row in grid
         self.bottom_frame.columnconfigure(0, weight=1)
@@ -131,15 +131,15 @@ class LoadDataSetWindow:
 
     def load(self):
         """
-            Action to load both files, perform validation TODO: Perform validation here
+            Action to import both files, perform validation TODO: Perform validation here and import files in
         """
-        LoggerFactory.get_logger().info(f"Loading file 1 as {self.file_path_1.get()}")
-        LoggerFactory.get_logger().info(f"Loading file 2 as {self.file_path_2.get()}")
+        LoggerFactory.get_logger().info(f"Importing file 1 as {self.file_path_1.get()}")
+        LoggerFactory.get_logger().info(f"Importing file 2 as {self.file_path_2.get()}")
         self.window.destroy()
 
     def cancel(self):
         """
-            Action to cancel loading files
+            Action to cancel importing files
         """
-        LoggerFactory.get_logger().info("Cancelling Load Data Set Window")
+        LoggerFactory.get_logger().info("Cancelling Import CSV Files Window")
         self.window.destroy()

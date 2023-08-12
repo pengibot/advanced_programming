@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from LoggerFactory import LoggerFactory
+from utils.LoggerFactory import LoggerFactory
 
 
 class MeanMedianModeWindow:
@@ -9,5 +9,5 @@ class MeanMedianModeWindow:
         self.window = tk.Toplevel(master)
         self.window.grab_set()
         self.window.title("Mean/Median/Mode")
-        icon = tk.PhotoImage(file="images/MeanMedianMode.png")
+        icon = tk.PhotoImage(file="gui/assets/mean_median_mode.png")
         self.window.iconphoto(False, icon)

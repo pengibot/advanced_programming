@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from LoggerFactory import LoggerFactory
+from utils.LoggerFactory import LoggerFactory
 
 
 class GraphWindow:
@@ -9,5 +9,5 @@ class GraphWindow:
         self.window = tk.Toplevel(master)
         self.window.grab_set()
         self.window.title("Graph")
-        icon = tk.PhotoImage(file="images/Graph.png")
+        icon = tk.PhotoImage(file="gui/assets/graph.png")
         self.window.iconphoto(False, icon)

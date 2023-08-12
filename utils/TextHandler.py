@@ -3,11 +3,12 @@ import tkinter as tk
 
 
 class TextHandler(logging.Handler):
-    # This class allows you to log to a Tkinter Text or ScrolledText widget
-    # Adapted from Moshe Kaplan: https://gist.github.com/moshekaplan/c425f861de7bbf28ef06
+    """
+        This class logs to a Text widget
+    """
 
     def __init__(self, text):
-        # run the regular Handler __init__
+        # run the regular Handler
         logging.Handler.__init__(self)
         # Store a reference to the Text it will log to
         self.text = text
@@ -19,8 +20,7 @@ class TextHandler(logging.Handler):
             self.text.configure(state='normal')
             self.text.insert(tk.END, msg + '\n')
             self.text.configure(state='disabled')
-            # Autoscroll to the bottom
-            self.text.yview(tk.END)
+            self.text.yview(tk.END)  # Autoscroll to the bottom
 
-        # This is necessary because we can't modify the Text from other threads
+        # This is necessary as cannot modify Text from other threads
         self.text.after(0, append)

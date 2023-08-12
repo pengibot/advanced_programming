@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
-from LoggerFactory import LoggerFactory
+from utils.LoggerFactory import LoggerFactory
 
 
 class CorrelationWindow:
@@ -15,7 +15,7 @@ class CorrelationWindow:
         self.window.configure(bg='white')
         self.window.grab_set()
         self.window.title("Correlation")
-        icon = tk.PhotoImage(file="images/Correlation.png")
+        icon = tk.PhotoImage(file="gui/assets/correlation.png")
         self.window.iconphoto(False, icon)
         self.master = master
 
@@ -23,7 +23,7 @@ class CorrelationWindow:
         self.tf.columnconfigure(0, weight=1)
         self.tf.rowconfigure(0, weight=1)
 
-        self.correlationImage = tk.PhotoImage(file='images/Correlation.png')
+        self.correlationImage = tk.PhotoImage(file='gui/assets/correlation.png')
         self.img_label = tk.Label(self.tf, image=self.correlationImage, anchor="w", justify="left", bg="white")
         self.img_label.image = self.correlationImage
         self.img_label.grid(row=0, column=0, padx=(20, 5), sticky='w')

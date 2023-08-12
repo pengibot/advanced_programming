@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 # Load the data
-data = pd.read_csv('TESTING1.csv')
+data = pd.read_csv('../TESTING1.csv')
 
 # Select the columns of interest
 columns_of_interest = ["Freq.", "Block", "Serv Label1", "Serv Label2", "Serv Label3", "Serv Label4", "Serv Label10"]

@@ -4,27 +4,28 @@ from json import JSONEncoder
 import pandas as pd
 
 
-def nan2None(obj):
+@staticmethod
+def nan_to_none(obj):
     if isinstance(obj, dict):
-        return {k: nan2None(v) for k, v in obj.items()}
+        return {k: nan_to_none(v) for k, v in obj.items()}
     elif isinstance(obj, list):
-        return [nan2None(v) for v in obj]
+        return [nan_to_none(v) for v in obj]
     elif isinstance(obj, float) and math.isnan(obj):
         return None
     return obj
 
 
-class NanConverter(JSONEncoder):
+class NaNConverter(JSONEncoder):
     def default(self, obj):
         # possible other customizations here
         pass
 
     def encode(self, obj, *args, **kwargs):
-        obj = nan2None(obj)
+        obj = nan_to_none(obj)
         return super().encode(obj, *args)
 
     def iterencode(self, obj, *args, **kwargs):
-        obj = nan2None(obj)
+        obj = nan_to_none(obj)
         return super().iterencode(obj, *args, **kwargs)
 
 
@@ -110,7 +111,7 @@ def convert_csv_to_json(transmitterInfoFilename, broadcastInfoFilename, jsonFile
         nested_dict.append(temp)
 
     # Convert the nested dictionary into a JSON string
-    nested_json = json.dumps(nested_dict, indent=4, cls=NanConverter)
+    nested_json = json.dumps(nested_dict, indent=4, cls=NaNConverter)
 
     # Write the JSON string to a file
     with open(jsonFile, 'w') as file:

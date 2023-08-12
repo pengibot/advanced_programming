@@ -20,7 +20,7 @@ class LoggerFactory:
 
         # Create handlers
         console_handler = logging.StreamHandler(sys.stdout)
-        file_handler = logging.FileHandler("app.log")
+        file_handler = logging.FileHandler("../app.log")
 
         # Create formatters and add it to handlers
         console_formatter = logging.Formatter("%(message)s")
