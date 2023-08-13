@@ -1,22 +1,28 @@
 import tkinter as tk
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.ticker import MultipleLocator
 
 from utils.LoggerFactory import LoggerFactory
 
 
 class GraphWindow:
+
+    data_manager = None
+    graph_data_items = None
+
     def __init__(self, master, data_manager):
+        self.data_manager = data_manager
+        self.graph_data_items = self.data_manager.extract_graph_data()
         LoggerFactory.get_logger().info("Initialized Graph Window")
         self.window = tk.Toplevel(master)
-        self.window.grab_set()
+        # self.window.grab_set()
         self.window.title("Graph")
         icon = tk.PhotoImage(file="gui/assets/graph.png")
         self.window.iconphoto(False, icon)
-
-        import matplotlib.pyplot as plt
 
         fig = self.plot_graph()
         canvas = FigureCanvasTkAgg(fig, master=self.window)
@@ -24,21 +30,36 @@ class GraphWindow:
         canvas.draw()
         canvas_widget.grid(row=0, column=0, padx=10, pady=10)
 
+        result = self.data_manager.extract_graph_data()
+        print(result)
+
     def plot_graph(self):
-        # Sample data
-        x = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-        y = np.array([1, 4, 2, 8, 6, 3, 5, 8, 7, 9])
 
-        # Create a figure and axis
-        fig, ax = plt.subplots(figsize=(5, 4))
+        data = []
 
-        # Plot data
-        ax.plot(x, y, '-b', label='Data Series', marker='o')
-        ax.set_title('Sample Data Plot')
-        ax.set_xlabel('Time (s)')
-        ax.set_ylabel('Distance (m)')
-        ax.grid(True)
-        ax.legend()
+        for graph_data_item in  self.graph_data_items:
+            data.append([graph_data_item.eid, graph_data_item.site])
+
+        columns = ["EID", "Site"]
+
+        df = pd.DataFrame(data=data, columns=columns)
+
+        # Real code below here
+
+        fig, ax = plt.subplots(figsize=(6, 4))
+
+        value_counts = df["EID"].value_counts()
+        unique_values = value_counts.index.tolist()
+
+        ax.barh(unique_values, value_counts)
+        ax.spines["right"].set_visible(False)
+        ax.spines["top"].set_visible(False)
+        ax.set_xlabel("Number of Sites", fontsize=12)
+        ax.set_ylabel("EID", fontsize=12)
+        # Setting x-axis to display only whole numbers
+        ax.xaxis.set_major_locator(MultipleLocator(1))
+
+        fig.text(.15, .9, "Site Distribution per EID", fontsize=15)
 
         return fig
 

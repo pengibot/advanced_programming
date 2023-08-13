@@ -178,3 +178,48 @@ class DataManager:
         print(f"Mode = {statistics.mode(erp_total)}")
 
         return statistics.mean(erp_total), statistics.median(erp_total), statistics.mode(erp_total)
+
+    def extract_graph_data(self) -> list:
+
+        graph_data_items = []
+
+        broadcast_info_df = pd.DataFrame(self.data_frame["broadcast_info"])
+
+        for index in range(0, len(broadcast_info_df)):
+            broadcast_dict = broadcast_info_df["broadcast_info"][index]
+            try:
+                eid = broadcast_dict["EID"]
+                if type(eid) == dict:
+                    graph_data_item = GraphDataItem()
+                    eid_value = list(dict(eid).keys())[0]
+                    graph_data_item.eid = eid_value
+                    graph_data_item.site = broadcast_dict["Site"]
+                    graph_data_item.freq = broadcast_dict["Freq."]
+                    graph_data_item.block = broadcast_dict["Block"]
+                    graph_data_item.serv_label_1 = broadcast_dict["Services"][0]["Serv Label1 "]
+                    graph_data_item.serv_label_2 = broadcast_dict["Services"][1]["Serv Label2 "]
+                    graph_data_item.serv_label_3 = broadcast_dict["Services"][2]["Serv Label3 "]
+                    graph_data_item.serv_label_4 = broadcast_dict["Services"][3]["Serv Label4 "]
+                    graph_data_item.serv_label_10 = broadcast_dict["Services"][9]["Serv Label10 "]
+
+                    graph_data_items.append(graph_data_item)
+                    # print(graph_data_item)
+            except:
+                LoggerFactory.get_logger().info(f"Unable to get EID")
+
+        return graph_data_items
+
+
+class GraphDataItem:
+    eid: str
+    site: str
+    freq: float
+    block: str
+    serv_label_1: str
+    serv_label_2: str
+    serv_label_3: str
+    serv_label_4: str
+    serv_label_10: str
+
+    def some_method(self) -> str:
+        return self.block

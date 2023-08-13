@@ -16,7 +16,7 @@ class SaveDataSetWindow:
         LoggerFactory.get_logger().info("Initialized Save Data Set Window")
         self.window = tk.Toplevel(master)  # Used to display dialog on top of Main Window
         self.window.configure(bg='white')
-        self.window.grab_set()  # Grabs all events for the application
+        # self.window.grab_set()  # Grabs all events for the application
         self.window.title("Save Data Set")
         self.window.geometry("544x219")
         self.window.resizable(False, False)  # Prevent the user from resizing the window

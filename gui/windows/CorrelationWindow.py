@@ -13,7 +13,7 @@ class CorrelationWindow:
         LoggerFactory.get_logger().info("Initialized Correlation Window")
         self.window = tk.Toplevel(master)
         self.window.configure(bg='white')
-        self.window.grab_set()
+        # self.window.grab_set()
         self.window.title("Correlation")
         icon = tk.PhotoImage(file="gui/assets/correlation.png")
         self.window.iconphoto(False, icon)
