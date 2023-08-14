@@ -121,11 +121,11 @@ class DataManager:
                 # Takes a Pandas DataFrame and converts it to JSON before writing it to a file
                 json.dump(json.loads(self.data_frame.to_json(orient='records')), file, indent=4)
             LoggerFactory.get_logger().info(f"File written Successfully")
-            return True
+            return True  # return result to GUI to inform of outcome
         except Exception as error:
             # Catch errors that may occur due to the json file being invalid
             LoggerFactory.get_logger().error(f"An error occurred whilst saving Data Frame to .json file: {error}")
-            return False
+            return False  # return result to GUI to inform of outcome
 
     def save_data_frame_to_json(self, json_file_name):
         """
@@ -172,12 +172,13 @@ class DataManager:
                             "Long": row['Long']
                         }
                     }
+                    LoggerFactory.get_logger().info(f"Adding entry with ID {row['id']} to dictionary")
+                    nested_dict.append(entry)  # Adding entries
                 except Exception as error:
                     # Catching error and logging result
                     LoggerFactory.get_logger().error(f"Unable to parse Data Frame Series: {error}")
 
-                LoggerFactory.get_logger().info(f"Adding entry with ID {row['id']} to dictionary")
-                nested_dict.append(entry)  # Adding entries
+
 
             # Convert the nested dictionary into a JSON string
             LoggerFactory.get_logger().info(f"Converting nested dictionary into a JSON string with indentation")
@@ -189,16 +190,26 @@ class DataManager:
                 LoggerFactory.get_logger().info(f"Writing JSON to file {json_file_name}")
                 file.write(nested_json)
             LoggerFactory.get_logger().info(f"File written Successfully")
-            return True
+            return True  # return result to GUI to inform of outcome
         except Exception as error:
             LoggerFactory.get_logger().error(f"An error occurred whilst saving Data Frame to .json File: {error}")
-            return False
+            return False  # return result to GUI to inform of outcome
 
     def clean_csv_json_data(self):
+        """
+            Helper method that calls several other functions to perform certain actions
+            to clean and format the CSV files into a Data Frame and JSON Object
+        """
+        # Saves the merged Data Frame to a JSON File
+        LoggerFactory.get_logger().info(f"Starting Cleaning and Data Mangling of Data Frame")
         self.save_data_frame_to_json(self.json_file_name)
+        # Remove the following NGRs from the JSON File
         self.remove_unwanted_NGRs({"NZ02553847", "SE213515", "NT05399374", "NT25265908"}, self.json_file_name)
+        # Extract out and rename the following EID multiplexes from the JSON File
         self.extract_EID_data(["C18A", "C18F", "C188"], self.json_file_name)
+        # Finally, read in the new JSON File into a Data Frame
         self.read_in_json_data(self.json_file_name)
+        LoggerFactory.get_logger().info(f"Finished Cleaning and Data Mangling of Data Frame")
 
     def generate_data_for_in_use_erp_total(self):
         # data_frame = pd.read_json("../temp.json")
