@@ -1,15 +1,19 @@
 import tkinter as tk
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+
 import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from utils.LoggerFactory import LoggerFactory
 
 
 class CorrelationWindow:
+    data_manager = None
+
     def __init__(self, master, data_manager):
+        self.data_manager = data_manager
         LoggerFactory.get_logger().info("Initialized Correlation Window")
         self.window = tk.Toplevel(master)
         self.window.configure(bg='white')
@@ -39,18 +43,37 @@ class CorrelationWindow:
         self.frame.grid(row=1, column=0)
 
         # Load the data
-        data = pd.read_csv('TESTING1.csv')
+        # data = pd.read_csv('TESTING1.csv')
 
-        # Select the columns of interest
-        columns_of_interest = ["Freq.", "Block", "Serv Label1", "Serv Label2", "Serv Label3", "Serv Label4",
-                               "Serv Label10"]
-        data_subset = data[columns_of_interest]
+        graph_data_items = self.data_manager.extract_graph_data()
+
+        data_list = []
+
+        for graph_data_item in graph_data_items:
+            data_list.append([graph_data_item.freq, graph_data_item.block, graph_data_item.serv_label_1,
+                              graph_data_item.serv_label_2, graph_data_item.serv_label_3, graph_data_item.serv_label_4,
+                              graph_data_item.serv_label_10])
+
+        columns = ["Freq.", "Block", "Serv Label1", "Serv Label2", "Serv Label3", "Serv Label4",
+                   "Serv Label10"]
+        data = pd.DataFrame(data=data_list, columns=columns)
 
         # Drop the rows with missing values
-        data_subset_clean = data_subset.dropna()
+        data_cleaned = data.dropna()
+
+        data_cleaned["Block"] = data_cleaned["Block"] .astype("category").cat.codes
+        data_cleaned["Serv Label1"] = data_cleaned["Serv Label1"] .astype("category").cat.codes
+        data_cleaned["Serv Label2"] = data_cleaned["Serv Label2"] .astype("category").cat.codes
+        data_cleaned["Serv Label3"] = data_cleaned["Serv Label3"] .astype("category").cat.codes
+        data_cleaned["Serv Label4"] = data_cleaned["Serv Label4"] .astype("category").cat.codes
+        data_cleaned["Serv Label10"] = data_cleaned["Serv Label10"] .astype("category").cat.codes
+
+        # data_encoded = pd.get_dummies(data_cleaned,
+        #                               columns=["Block", "Serv Label1", "Serv Label2", "Serv Label3", "Serv Label4",
+        #                                        "Serv Label10"])
 
         # Calculate the correlation matrix
-        corr_matrix = data_subset_clean.corr()
+        corr_matrix = data_cleaned.corr()
 
         # Create a new figure for the plot
         fig, ax = plt.subplots(figsize=(5, 5))
