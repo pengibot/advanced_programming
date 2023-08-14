@@ -30,9 +30,6 @@ class GraphWindow:
         canvas.draw()
         canvas_widget.grid(row=0, column=0, padx=10, pady=10)
 
-        result = self.data_manager.extract_graph_data()
-        print(result)
-
     def plot_graph(self):
 
         data = []
@@ -46,20 +43,49 @@ class GraphWindow:
 
         # Real code below here
 
-        fig, ax = plt.subplots(figsize=(6, 4))
+        fig, ax = plt.subplots(figsize=(10, 10), nrows=2, ncols=2)
 
         value_counts = df["EID"].value_counts()
         unique_values = value_counts.index.tolist()
-
-        ax.barh(unique_values, value_counts)
-        ax.spines["right"].set_visible(False)
-        ax.spines["top"].set_visible(False)
-        ax.set_xlabel("Number of Sites", fontsize=12)
-        ax.set_ylabel("EID", fontsize=12)
+        # Top Left
+        ax[0, 0].barh(unique_values, value_counts)
+        ax[0, 0].spines["right"].set_visible(False)
+        ax[0, 0].spines["top"].set_visible(False)
+        ax[0, 0].set_xlabel("Number of Sites", fontsize=8)
+        ax[0, 0].set_ylabel("EID", fontsize=8)
         # Setting x-axis to display only whole numbers
-        ax.xaxis.set_major_locator(MultipleLocator(1))
+        ax[0, 0].xaxis.set_major_locator(MultipleLocator(1))
+        ax[0, 0].set_title("Site Distribution per EID")
 
-        fig.text(.15, .9, "Site Distribution per EID", fontsize=15)
+        # Top Right
+        ax[0, 1].barh(unique_values, value_counts)
+        ax[0, 1].spines["right"].set_visible(False)
+        ax[0, 1].spines["top"].set_visible(False)
+        ax[0, 1].set_xlabel("Number of Sites", fontsize=8)
+        ax[0, 1].set_ylabel("EID", fontsize=8)
+        # Setting x-axis to display only whole numbers
+        ax[0, 1].xaxis.set_major_locator(MultipleLocator(1))
+        ax[0, 1].set_title("Graph 2")
+
+        # Bottom Left
+        ax[1, 0].barh(unique_values, value_counts)
+        ax[1, 0].spines["right"].set_visible(False)
+        ax[1, 0].spines["top"].set_visible(False)
+        ax[1, 0].set_xlabel("Number of Sites", fontsize=8)
+        ax[1, 0].set_ylabel("EID", fontsize=8)
+        # Setting x-axis to display only whole numbers
+        ax[1, 0].xaxis.set_major_locator(MultipleLocator(1))
+        ax[1, 0].set_title("Graph 3")
+
+        # Bottom Right
+        ax[1, 1].barh(unique_values, value_counts)
+        ax[1, 1].spines["right"].set_visible(False)
+        ax[1, 1].spines["top"].set_visible(False)
+        ax[1, 1].set_xlabel("Number of Sites", fontsize=8)
+        ax[1, 1].set_ylabel("EID", fontsize=8)
+        # Setting x-axis to display only whole numbers
+        ax[1, 1].xaxis.set_major_locator(MultipleLocator(1))
+        ax[1, 1].set_title("Graph 4")
 
         return fig
 
