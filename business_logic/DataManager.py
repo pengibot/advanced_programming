@@ -3,6 +3,7 @@ import statistics
 
 import pandas as pd
 
+from business_logic.GraphDataItem import GraphDataItem
 from utils import LoggerFactory
 from utils.NaNConverter import NaNConverter
 
@@ -135,9 +136,10 @@ class DataManager:
         try:
             # Convert the DataFrame into a nested dictionary
             nested_dict = []
-            for index, row in self.data_frame.iterrows():
+            LoggerFactory.get_logger().error(f"Starting to iterate through all Data Frame rows to export to JSON")
+            for index, row in self.data_frame.iterrows():  # Loop through all the current data_frame rows
                 try:
-                    entry = {
+                    entry = {  # Saving to temporary variable entry
                         "id": row['id'],  # Use id as the primary identifier
                         "transmitter_info": {  # Group data to do with transmitter info
                             "NGR": row['NGR'],
@@ -173,12 +175,10 @@ class DataManager:
                         }
                     }
                     LoggerFactory.get_logger().info(f"Adding entry with ID {row['id']} to dictionary")
-                    nested_dict.append(entry)  # Adding entries
+                    nested_dict.append(entry)  # Adding entry to dictionary
                 except Exception as error:
                     # Catching error and logging result
                     LoggerFactory.get_logger().error(f"Unable to parse Data Frame Series: {error}")
-
-
 
             # Convert the nested dictionary into a JSON string
             LoggerFactory.get_logger().info(f"Converting nested dictionary into a JSON string with indentation")
@@ -212,77 +212,95 @@ class DataManager:
         LoggerFactory.get_logger().info(f"Finished Cleaning and Data Mangling of Data Frame")
 
     def generate_data_for_in_use_erp_total(self):
-        # data_frame = pd.read_json("../temp.json")
+        """
+            Responsible for reading the DataFrame and extracting out the
+        """
+
+        LoggerFactory.get_logger().info(f"Generating Data for in use ERP")
+
+        # Read in specific part of DataFrame concerned with broadcast info
         broadcast_info_df = pd.DataFrame(self.data_frame["broadcast_info"])
+        LoggerFactory.get_logger().info(f"Read in subset of Data Frame, broadcast_info")
 
-        erp_total = []
+        erp_total = []  # store found ERPs in list
         for index in range(0, len(broadcast_info_df)):
-            broadcast_dict = broadcast_info_df["broadcast_info"][index]
-            # print(broadcast_info_df)
+            broadcast_dict = broadcast_info_df["broadcast_info"][index]  # Read in dictionary items
             try:
-                eid = broadcast_dict["EID"]
-                if type(eid) == dict:
-                    key = list(dict(eid).keys())[0]
+                eid = broadcast_dict["EID"]  # Read in EID
+                if type(eid) == dict:  # If EID is a dictionary, it must be nested with necessary data
+                    key = list(dict(eid).keys())[0]  # Get the key (C18A, C18F or C188)
+                    LoggerFactory.get_logger().info(f"Found ERP({key}) containing extracted data")
+                    LoggerFactory.get_logger().info(f"Checking for Site Height > 75 and Date from 2001")
                     if broadcast_dict["EID"][key]["Site Height"] > 75 and int(broadcast_dict["Date"][-4:]) >= 2001:
-                        erp_total.append(broadcast_dict["EID"][key]["Power (kW)"])
+                        erp_total.append(broadcast_dict["EID"][key]["Power (kW)"])  # Add Power (kW) to erp_total
+                        LoggerFactory.get_logger().info(f"{key} matched search criteria")
+                    else:
+                        LoggerFactory.get_logger().info(f"{key} did not match search criteria")
+            except Exception as error:
+                LoggerFactory.get_logger().info(f"Unable to get EID: {error}")
 
-            except:
-                LoggerFactory.get_logger().info(f"Unable to get EID")
+        LoggerFactory.get_logger().info(f"Found the following Power (kW)'s that matched: {erp_total}")
 
-        print(erp_total)
+        LoggerFactory.get_logger().info(f"Convert invalid value to valid value")
         counter = 0
-        while counter != len(erp_total):
-            erp_total[counter] = erp_total[counter].replace(".", "")
-            erp_total[counter] = float(erp_total[counter].replace(",", "."))
+        while counter != len(erp_total):  # Convert invalid value to valid value
+            erp_total[counter] = erp_total[counter].replace(".", "")  # remove unneeded dot
+            erp_total[counter] = float(erp_total[counter].replace(",", "."))  # Replace , with decimal point
             counter += 1
 
-        print(f"Mean = {statistics.mean(erp_total)}")
-        print(f"Median = {statistics.median(erp_total)}")
-        print(f"Mode = {statistics.mode(erp_total)}")
+        LoggerFactory.get_logger().info(f"Mean = {statistics.mean(erp_total)}")
+        LoggerFactory.get_logger().info(f"Median = {statistics.median(erp_total)}")
+        LoggerFactory.get_logger().info(f"Mode = {statistics.mode(erp_total)}")
 
+        # return mean, median and mode to GUI to display to user
         return statistics.mean(erp_total), statistics.median(erp_total), statistics.mode(erp_total)
 
-    def extract_graph_data(self) -> list:
+    def extract_graph_data(self):
+        """
+            Extract needed data from DataFrame to use in Graph
+            GraphDataItem object is used to transport data, a DTO.
+        """
 
-        graph_data_items = []
+        LoggerFactory.get_logger().info(f"Extracting GraphData from DataFrame")
+        graph_data_items = []  # Used to store graph data items
 
+        # Read in specific part of DataFrame concerned with broadcast info
         broadcast_info_df = pd.DataFrame(self.data_frame["broadcast_info"])
 
-        for index in range(0, len(broadcast_info_df)):
-            broadcast_dict = broadcast_info_df["broadcast_info"][index]
+        LoggerFactory.get_logger().info(f"Looping through the broadcast info for each DataFrame")
+        for index in range(0, len(broadcast_info_df)):  # Loop through each index
+            broadcast_dict = broadcast_info_df["broadcast_info"][index]  # Retrieve the dictionary item
             try:
-                eid = broadcast_dict["EID"]
-                if type(eid) == dict:
-                    graph_data_item = GraphDataItem()
-                    eid_value = list(dict(eid).keys())[0]
+                eid = broadcast_dict["EID"]  # Get the EID from the dictionary
+                if type(eid) == dict:  # If it is a dictionary, it contains the needed information
+                    graph_data_item = GraphDataItem()  # Create a GraphDataItem DTO to store Data
+                    eid_value = list(dict(eid).keys())[0]  # Retrieve the Key Value of EID
+                    LoggerFactory.get_logger().info(f"Gathering Graph Data information for EID={eid_value}")
+
+                    # Assign each value from the DataFrame to the GraphDataItem
                     graph_data_item.eid = eid_value
                     graph_data_item.site = broadcast_dict["Site"]
+                    LoggerFactory.get_logger().info(f"Extracted Site as {graph_data_item.site}")
                     graph_data_item.freq = broadcast_dict["Freq."]
+                    LoggerFactory.get_logger().info(f"Extracted Freq. as {graph_data_item.freq}")
                     graph_data_item.block = broadcast_dict["Block"]
+                    LoggerFactory.get_logger().info(f"Extracted Block as {graph_data_item.block}")
                     graph_data_item.serv_label_1 = broadcast_dict["Services"][0]["Serv Label1 "]
+                    LoggerFactory.get_logger().info(f"Extracted Serv Label1 as {graph_data_item.serv_label_1}")
                     graph_data_item.serv_label_2 = broadcast_dict["Services"][1]["Serv Label2 "]
+                    LoggerFactory.get_logger().info(f"Extracted Serv Label2 as {graph_data_item.serv_label_2}")
                     graph_data_item.serv_label_3 = broadcast_dict["Services"][2]["Serv Label3 "]
+                    LoggerFactory.get_logger().info(f"Extracted Serv Label3 as {graph_data_item.serv_label_3}")
                     graph_data_item.serv_label_4 = broadcast_dict["Services"][3]["Serv Label4 "]
+                    LoggerFactory.get_logger().info(f"Extracted Serv Label4 as {graph_data_item.serv_label_4}")
                     graph_data_item.serv_label_10 = broadcast_dict["Services"][9]["Serv Label10 "]
+                    LoggerFactory.get_logger().info(f"Extracted Serv Label10 as {graph_data_item.serv_label_10}")
 
+                    LoggerFactory.get_logger().info(f"Finished Creating GraphDataItem, adding to list")
                     graph_data_items.append(graph_data_item)
                     # print(graph_data_item)
             except Exception as error:
-                LoggerFactory.get_logger().info(f"Unable to get EID")
+                LoggerFactory.get_logger().info(f"Unable to get EID: {error}")
 
+        LoggerFactory.get_logger().info(f"Finished gathering {len(graph_data_items)} GraphDataItems")
         return graph_data_items
-
-
-class GraphDataItem:
-    eid: str
-    site: str
-    freq: float
-    block: str
-    serv_label_1: str
-    serv_label_2: str
-    serv_label_3: str
-    serv_label_4: str
-    serv_label_10: str
-
-    def some_method(self) -> str:
-        return self.block
