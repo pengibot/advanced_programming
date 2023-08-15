@@ -236,12 +236,16 @@ class DataManager:
                         LoggerFactory.get_logger().info(f"{key} matched search criteria")
                     else:
                         LoggerFactory.get_logger().info(f"{key} did not match search criteria")
+            except KeyError as error:
+                LoggerFactory.get_logger().error(f"Unable to get ERP due to a key missing: {error}")
+            except IndexError as error:
+                LoggerFactory.get_logger().error(f"Unable to get ERP due to unexpected format of EID node: {error}")
             except Exception as error:
-                LoggerFactory.get_logger().info(f"Unable to get EID: {error}")
+                LoggerFactory.get_logger().error(f"Unable to get ERP data: {error}")
 
-        LoggerFactory.get_logger().info(f"Found the following Power (kW)'s that matched: {erp_total}")
+        LoggerFactory.get_logger().debug(f"Found the following Power (kW)'s that matched: {erp_total}")
 
-        LoggerFactory.get_logger().info(f"Convert invalid value to valid value")
+        LoggerFactory.get_logger().debug(f"Convert invalid value to valid value")
         counter = 0
         while counter != len(erp_total):  # Convert invalid value to valid value
             erp_total[counter] = erp_total[counter].replace(".", "")  # remove unneeded dot
@@ -280,27 +284,30 @@ class DataManager:
                     # Assign each value from the DataFrame to the GraphDataItem
                     graph_data_item.eid = eid_value
                     graph_data_item.site = broadcast_dict["Site"]
-                    LoggerFactory.get_logger().info(f"Extracted Site as {graph_data_item.site}")
+                    LoggerFactory.get_logger().debug(f"Extracted Site as {graph_data_item.site}")
                     graph_data_item.freq = broadcast_dict["Freq."]
-                    LoggerFactory.get_logger().info(f"Extracted Freq. as {graph_data_item.freq}")
+                    LoggerFactory.get_logger().debug(f"Extracted Freq. as {graph_data_item.freq}")
                     graph_data_item.block = broadcast_dict["Block"]
-                    LoggerFactory.get_logger().info(f"Extracted Block as {graph_data_item.block}")
+                    LoggerFactory.get_logger().debug(f"Extracted Block as {graph_data_item.block}")
                     graph_data_item.serv_label_1 = broadcast_dict["Services"][0]["Serv Label1 "]
-                    LoggerFactory.get_logger().info(f"Extracted Serv Label1 as {graph_data_item.serv_label_1}")
+                    LoggerFactory.get_logger().debug(f"Extracted Serv Label1 as {graph_data_item.serv_label_1}")
                     graph_data_item.serv_label_2 = broadcast_dict["Services"][1]["Serv Label2 "]
-                    LoggerFactory.get_logger().info(f"Extracted Serv Label2 as {graph_data_item.serv_label_2}")
+                    LoggerFactory.get_logger().debug(f"Extracted Serv Label2 as {graph_data_item.serv_label_2}")
                     graph_data_item.serv_label_3 = broadcast_dict["Services"][2]["Serv Label3 "]
-                    LoggerFactory.get_logger().info(f"Extracted Serv Label3 as {graph_data_item.serv_label_3}")
+                    LoggerFactory.get_logger().debug(f"Extracted Serv Label3 as {graph_data_item.serv_label_3}")
                     graph_data_item.serv_label_4 = broadcast_dict["Services"][3]["Serv Label4 "]
-                    LoggerFactory.get_logger().info(f"Extracted Serv Label4 as {graph_data_item.serv_label_4}")
+                    LoggerFactory.get_logger().debug(f"Extracted Serv Label4 as {graph_data_item.serv_label_4}")
                     graph_data_item.serv_label_10 = broadcast_dict["Services"][9]["Serv Label10 "]
-                    LoggerFactory.get_logger().info(f"Extracted Serv Label10 as {graph_data_item.serv_label_10}")
+                    LoggerFactory.get_logger().debug(f"Extracted Serv Label10 as {graph_data_item.serv_label_10}")
 
                     LoggerFactory.get_logger().info(f"Finished Creating GraphDataItem, adding to list")
                     graph_data_items.append(graph_data_item)
-                    # print(graph_data_item)
+            except KeyError as error:
+                LoggerFactory.get_logger().error(f"Unable to get Graph Data due to a key missing: {error}")
+            except IndexError as error:
+                LoggerFactory.get_logger().error(f"Unable to get Graph Data due to unexpected format of EID node: {error}")
             except Exception as error:
-                LoggerFactory.get_logger().info(f"Unable to get EID: {error}")
+                LoggerFactory.get_logger().error(f"Unable to get EID data: {error}")
 
         LoggerFactory.get_logger().info(f"Finished gathering {len(graph_data_items)} GraphDataItems")
         return graph_data_items
