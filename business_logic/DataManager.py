@@ -9,9 +9,6 @@ from utils import LoggerFactory
 from utils.NaNConverter import NaNConverter
 
 
-
-
-
 class DataManager:
     """
         Class responsible for interacting with the data. Decoupled from the front end
@@ -164,8 +161,9 @@ class DataManager:
                             "In-Use Ae Ht": row['In-Use Ae Ht'],
                             "In-Use ERP Total": row['In-Use ERP Total'],
                             "Dir Max ERP": row['Dir Max ERP'],
-                            "Radiation Pattern":  # Group Radiation patterns into separate node
-                                {str(i * 10): row[str(i * 10)] for i in range(36)},
+                            "Radiation Pattern": {  # Group Radiation patterns into separate node
+                                str(i * 10): row[str(i * 10)] for i in range(36)
+                            },
                             "Lat": row['Lat'],
                             "Long": row['Long']
                         },
