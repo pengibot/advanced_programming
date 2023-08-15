@@ -32,6 +32,7 @@ class GraphWindow:
 
         LoggerFactory.get_logger().info("Plotting Graph")
         figure = self.plot_graph()  # Call to plot the graphs
+
         # Preparing Matplotlib figure to be embedded and displayed in Tkinter window
         canvas = FigureCanvasTkAgg(figure, master=self.window)
         canvas_widget = canvas.get_tk_widget()  # Extracting Tkinter Canvas widget
