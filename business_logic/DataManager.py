@@ -222,7 +222,7 @@ class DataManager:
             to clean and format the CSV files into a Data Frame and JSON Object
         """
         # Saves the merged Data Frame to a JSON File
-        LoggerFactory.get_logger().info(f"Starting Cleaning and Data Mangling of Data Frame")
+        LoggerFactory.get_logger().info(f"Starting Cleaning and Data Wrangling of Data Frame")
         self.save_data_frame_to_json(self.json_file_name)
         # Remove the following NGRs from the JSON File
         self.remove_unwanted_NGRs({"NZ02553847", "SE213515", "NT05399374", "NT25265908"}, self.json_file_name)
@@ -230,7 +230,7 @@ class DataManager:
         self.extract_EID_data(["C18A", "C18F", "C188"], self.json_file_name)
         # Finally, read in the new JSON File into a Data Frame
         self.read_in_json_data(self.json_file_name)
-        LoggerFactory.get_logger().info(f"Finished Cleaning and Data Mangling of Data Frame")
+        LoggerFactory.get_logger().info(f"Finished Cleaning and Data Wrangling of Data Frame")
 
     def generate_data_for_in_use_erp_total(self):
         """
