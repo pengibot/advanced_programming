@@ -96,6 +96,9 @@ class DataManager:
             LoggerFactory.get_logger().info(f"Successfully merged DataFrames into one")
             self.clean_csv_json_data()
             return True  # return result to GUI to inform of outcome
+        except pd.errors.ParserError as error:
+            LoggerFactory.get_logger().error(f"An error occurred parsing the files: {error}")
+            return False  # return result to GUI to inform of outcome
         except Exception as error:  # Catch errors from reading in the csv files and attempting to merge
             LoggerFactory.get_logger().error(f"An error occurred whilst merging DataFrames: {error}")
             return False  # return result to GUI to inform of outcome

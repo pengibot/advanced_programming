@@ -8,12 +8,13 @@ class LoadDataSetWindow:
     """
         Window to load a data set from .json file.
     """
-    data_manager = None
-    set_state_of_buttons = None
+    data_manager = None  # Reference to the Data Manager to query for Data
+    set_state_of_buttons = None  # Function passed in to control Main Window Menu Buttons
 
     def __init__(self, master, data_manager, set_state_of_buttons):
-        self.set_state_of_buttons = set_state_of_buttons
         self.data_manager = data_manager
+        # function that will allow the MainWindow to enable buttons once there is a DataFrame to act upon
+        self.set_state_of_buttons = set_state_of_buttons
         LoggerFactory.get_logger().info("Initialized Load Data Set Window")
         self.window = tk.Toplevel(master)  # Used to display dialog on top of Main Window
         self.window.configure(bg='white')
@@ -38,7 +39,7 @@ class LoadDataSetWindow:
 
         # Adding Instructions label to top frame
         self.instructions_label = tk.Label(self.top_frame,
-                                           text="Select a location to load the Data Set from in .json format",
+                                           text="Select a location to load the Data Set in .json format",
                                            font=('Aerial', 11), anchor="w", justify="left", bg='white')
         self.instructions_label.grid(row=0, column=1, padx=(5, 0))
 

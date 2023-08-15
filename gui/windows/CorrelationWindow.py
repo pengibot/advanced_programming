@@ -10,41 +10,46 @@ from utils.LoggerFactory import LoggerFactory
 
 
 class CorrelationWindow:
-    data_manager = None
+    """
+        Displays a correlation matrix for a set of Data
+        Freq., Block, Serv Label1, Serv Label2, Serv Label3, Serv Label4, Serv Label10
+    """
+    data_manager = None  # Reference to the Data Manager to query for Data
 
     def __init__(self, master, data_manager):
         self.data_manager = data_manager
         LoggerFactory.get_logger().info("Initialized Correlation Window")
-        self.window = tk.Toplevel(master)
+        self.window = tk.Toplevel(master)  # Used to display dialog on top of Main Window
         self.window.configure(bg='white')
         self.window.grab_set()  # Grabs all events for the application
         self.window.title("Correlation")
         icon = tk.PhotoImage(file="gui/assets/correlation.png")
-        self.window.iconphoto(False, icon)
+        self.window.iconphoto(False, icon)  # Add icon for dialog
         self.master = master
 
-        self.tf = tk.Frame(self.window, bg="white")
-        self.tf.columnconfigure(0, weight=1)
-        self.tf.rowconfigure(0, weight=1)
+        # Created a frame to group components at the top of the dialog
+        self.top_frame = tk.Frame(self.window, bg="white")
+        self.top_frame.columnconfigure(0, weight=1)
+        self.top_frame.rowconfigure(0, weight=1)
 
+        # Adding Correlation image to top frame
         self.correlationImage = tk.PhotoImage(file='gui/assets/correlation.png')
-        self.img_label = tk.Label(self.tf, image=self.correlationImage, anchor="w", justify="left", bg="white")
+        self.img_label = tk.Label(self.top_frame, image=self.correlationImage, anchor="w", justify="left", bg="white")
         self.img_label.image = self.correlationImage
         self.img_label.grid(row=0, column=0, padx=(20, 5), sticky='w')
 
-        self.label1 = tk.Label(self.tf, text="Correlation Matrix",
-                               font=('Aerial', 18), anchor="w", justify="left", bg="white")
-        self.label1.grid(row=0, column=1, padx=(5, 0), sticky='w')
+        # Title to be shown at top of frame
+        self.title = tk.Label(self.top_frame, text="Correlation Matrix",
+                              font=('Aerial', 18), anchor="w", justify="left", bg="white")
+        self.title.grid(row=0, column=1, padx=(5, 0), sticky='w')
 
-        self.tf.grid(row=0, column=0, sticky="w")
+        # Adding top frame to first row in grid
+        self.top_frame.grid(row=0, column=0, sticky="w")
 
         self.frame = tk.Frame(self.window, bg='white')
-        # self.frame.pack(fill=tk.BOTH, expand=1)
         self.frame.grid(row=1, column=0)
 
         # Load the data
-        # data = pd.read_csv('TESTING1.csv')
-
         graph_data_items = self.data_manager.extract_graph_data()
 
         data_list = []
@@ -67,10 +72,6 @@ class CorrelationWindow:
         data_cleaned["Serv Label3"] = data_cleaned["Serv Label3"] .astype("category").cat.codes
         data_cleaned["Serv Label4"] = data_cleaned["Serv Label4"] .astype("category").cat.codes
         data_cleaned["Serv Label10"] = data_cleaned["Serv Label10"] .astype("category").cat.codes
-
-        # data_encoded = pd.get_dummies(data_cleaned,
-        #                               columns=["Block", "Serv Label1", "Serv Label2", "Serv Label3", "Serv Label4",
-        #                                        "Serv Label10"])
 
         # Calculate the correlation matrix
         corr_matrix = data_cleaned.corr()
@@ -105,8 +106,7 @@ class CorrelationWindow:
         # Set title
         plt.title('Correlation Matrix of Selected Variables', pad=90)
 
-        # Show the plot
-        # plt.show()
+
         # Display the plot in the Tkinter window
         canvas = FigureCanvasTkAgg(fig, master=self.window)
         canvas.draw()
