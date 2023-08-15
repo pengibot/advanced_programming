@@ -44,6 +44,6 @@ class NaNConverter(JSONEncoder):
         elif isinstance(obj, list):  # Check if the obj is a List
             return [NaNConverter.nan_to_none(v) for v in obj]  # Recursive Call
         elif isinstance(obj, float) and math.isnan(obj):  # Check if object is a float and set to NaN
-            LoggerFactory.get_logger().info("Detected a NaN object. Converting NaN to null")
+            LoggerFactory.get_logger().debug("Detected a NaN object. Converting NaN to null")
             return None  # return None in its place
         return obj  # return original object

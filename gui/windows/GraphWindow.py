@@ -26,6 +26,7 @@ class GraphWindow:
         LoggerFactory.get_logger().info("Initialized Graph Window")
         self.window = tk.Toplevel(master)  # Constructs a top level widget from the master
         self.window.title("Graph")
+        self.window.grab_set()  # Grabs all events for the application
         icon = tk.PhotoImage(file="gui/assets/graph.png")
         self.window.iconphoto(False, icon)  # Adding icon to Window
 

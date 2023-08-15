@@ -8,6 +8,27 @@ from utils import LoggerFactory
 from utils.NaNConverter import NaNConverter
 
 
+def remove_unwanted_NGRs(unwanted_NGRs, jsonFile):
+    """
+        Removes NGR data from the json file passed in
+    """
+
+    LoggerFactory.get_logger().info(f"Started removing the following NGR's from the data set, {unwanted_NGRs}")
+    # Load the data from the JSON file
+    with open(jsonFile, 'r') as file:
+        LoggerFactory.get_logger().info(f"Opened {jsonFile} in order to remove NGR's")
+        data = json.load(file)
+
+    # Use list comprehension to keep only the entries with an NGR not in the unwanted set
+    data = [entry for entry in data if entry['transmitter_info']['NGR'] not in unwanted_NGRs]
+    LoggerFactory.get_logger().info(f"Successfully removed NGR's")
+
+    # Write the data back to the JSON file
+    with open(jsonFile, 'w') as file:
+        LoggerFactory.get_logger().info(f"Updating {jsonFile} with changes")
+        json.dump(data, file, indent=4)  # Use indent to make it human-readable
+
+
 class DataManager:
     """
         Class responsible for interacting with the data. Decoupled from the front end
@@ -25,27 +46,8 @@ class DataManager:
         """
         return self.data_frame
 
-    def remove_unwanted_NGRs(self, unwanted_NGRs, jsonFile):
-        """
-            Removes NGR data from the json file passed in
-        """
-
-        LoggerFactory.get_logger().info(f"Started removing the following NGR's from the data set, {unwanted_NGRs}")
-        # Load the data from the JSON file
-        with open(jsonFile, 'r') as file:
-            LoggerFactory.get_logger().info(f"Opened {jsonFile} in order to remove NGR's")
-            data = json.load(file)
-
-        # Use list comprehension to keep only the entries with an NGR not in the unwanted set
-        data = [entry for entry in data if entry['transmitter_info']['NGR'] not in unwanted_NGRs]
-        LoggerFactory.get_logger().info(f"Successfully removed NGR's")
-
-        # Write the data back to the JSON file
-        with open(jsonFile, 'w') as file:
-            LoggerFactory.get_logger().info(f"Updating {jsonFile} with changes")
-            json.dump(data, file, indent=4)  # Use indent to make it human-readable
-
-    def extract_EID_data(self, multiplexes, jsonFile):
+    @staticmethod
+    def extract_EID_data(multiplexes, jsonFile):
         """
             Extracts EID data into a new entry.
             Renames 'In-Use Ae Ht' to 'Aerial height (m)'
@@ -61,7 +63,7 @@ class DataManager:
             for entry in data:
                 if entry['broadcast_info']['EID'] in multiplexes:
                     LoggerFactory.get_logger().info(
-                        f"Found EID data mathing a multiplex for {entry['broadcast_info']['EID']}")
+                        f"Found EID data matching a multiplex for {entry['broadcast_info']['EID']}")
                     LoggerFactory.get_logger().info(f"Extracting data to create a new entry")
                     entry['broadcast_info']['EID'] = {entry['broadcast_info']['EID']: {
                         "Site": entry['broadcast_info']['Site'],
@@ -174,7 +176,7 @@ class DataManager:
                             "Long": row['Long']
                         }
                     }
-                    LoggerFactory.get_logger().info(f"Adding entry with ID {row['id']} to dictionary")
+                    LoggerFactory.get_logger().debug(f"Adding entry with ID {row['id']} to dictionary")
                     nested_dict.append(entry)  # Adding entry to dictionary
                 except Exception as error:
                     # Catching error and logging result
@@ -204,7 +206,7 @@ class DataManager:
         LoggerFactory.get_logger().info(f"Starting Cleaning and Data Mangling of Data Frame")
         self.save_data_frame_to_json(self.json_file_name)
         # Remove the following NGRs from the JSON File
-        self.remove_unwanted_NGRs({"NZ02553847", "SE213515", "NT05399374", "NT25265908"}, self.json_file_name)
+        remove_unwanted_NGRs({"NZ02553847", "SE213515", "NT05399374", "NT25265908"}, self.json_file_name)
         # Extract out and rename the following EID multiplexes from the JSON File
         self.extract_EID_data(["C18A", "C18F", "C188"], self.json_file_name)
         # Finally, read in the new JSON File into a Data Frame
@@ -305,7 +307,8 @@ class DataManager:
             except KeyError as error:
                 LoggerFactory.get_logger().error(f"Unable to get Graph Data due to a key missing: {error}")
             except IndexError as error:
-                LoggerFactory.get_logger().error(f"Unable to get Graph Data due to unexpected format of EID node: {error}")
+                LoggerFactory.get_logger().error(
+                    f"Unable to get Graph Data due to unexpected format of EID node: {error}")
             except Exception as error:
                 LoggerFactory.get_logger().error(f"Unable to get EID data: {error}")
 
