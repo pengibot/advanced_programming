@@ -109,11 +109,16 @@ class DataManager:
         """
             Reads in json file to a Data Frame using Pandas
         """
+
         try:
             LoggerFactory.get_logger().info(f"Starting to read in .json file {json_file}")
             self.data_frame = pd.read_json(json_file)  # Use Pandas library to read in .json file
             LoggerFactory.get_logger().info(f"Finished reading in .json file to Data Frame")
             return True  # return result to GUI to inform of outcome
+        except ValueError as error:
+            # Catch errors that may occur due to the file not existing or being in .json format
+            LoggerFactory.get_logger().error(f"An error occurred whilst reading .json file: {error}")
+            return False  # return result to GUI to inform of outcome
         except Exception as error:
             # Catch errors that may occur due to the json file being invalid
             LoggerFactory.get_logger().error(f"An error occurred whilst reading .json file to Data Frame: {error}")

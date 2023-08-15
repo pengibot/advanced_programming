@@ -101,7 +101,7 @@ class LoadDataSetWindow:
 
     def load(self):
         """
-            Action to load file, perform validation TODO: Perform validation here
+            Action to load .json
         """
 
         LoggerFactory.get_logger().info(f"Loading file as {self.load_file_path.get()}")
