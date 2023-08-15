@@ -78,8 +78,15 @@ class MainWindow:
         self.set_state_of_buttons()
 
     def set_state_of_buttons(self):
+        """
+            Method that will allow/disallow certain action based on whether the DataSet has been loaded
+        """
+
+        # Check if the data set has been loaded
         dataset_loaded = self.data_manager.get_data_frame() is not None
 
+        LoggerFactory.get_logger().debug(f"Setting buttons state to {'normal' if dataset_loaded else 'disabled'}")
+        # Setting the state of buttons that should only be enabled when there is data to act upon
         self.save_data_set_button["state"] = "normal" if dataset_loaded else "disabled"
         self.load_mean_median_mode_button["state"] = "normal" if dataset_loaded else "disabled"
         self.display_graph_button["state"] = "normal" if dataset_loaded else "disabled"

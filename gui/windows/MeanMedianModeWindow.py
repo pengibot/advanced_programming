@@ -38,7 +38,8 @@ class MeanMedianModeWindow:
 
         # Adding Instructions label to top frame
         self.instructions_label = tk.Label(self.top_frame,
-                                           text="Producing the mean, median and mode for the 'In-Use ERP Total' from the extracted DAB multiplexes extracted earlier: C18A, C18F and C188",
+                                           text="Producing the mean, median and mode for the 'In-Use ERP Total' from "
+                                                "the extracted DAB multiplexes extracted earlier: C18A, C18F and C188",
                                            font=('Aerial', 11), anchor="w", justify="left", bg='white',
                                            wraplength=400)
         self.instructions_label.grid(row=0, column=1, padx=(5, 0))
@@ -62,15 +63,18 @@ class MeanMedianModeWindow:
         self.mode_label.grid(row=2, column=0)
 
         # Adding Entry component for file output (.json File)
-        self.mean_entry = tk.Label(self.middle_frame, textvariable=self.mean_value, width=10, font=('Aerial', 20), bg='white')
+        self.mean_entry = tk.Label(self.middle_frame, textvariable=self.mean_value, width=10, font=('Aerial', 20),
+                                   bg='white')
         self.mean_entry.grid(row=0, column=1)
 
         # Adding Entry component for file output (.json File)
-        self.median_entry = tk.Label(self.middle_frame, textvariable=self.median_value, width=10, font=('Aerial', 20), bg='white')
+        self.median_entry = tk.Label(self.middle_frame, textvariable=self.median_value, width=10, font=('Aerial', 20),
+                                     bg='white')
         self.median_entry.grid(row=1, column=1)
 
         # Adding Entry component for file output (.json File)
-        self.mode_entry = tk.Label(self.middle_frame, textvariable=self.mode_value, width=10, font=('Aerial', 20), bg='white')
+        self.mode_entry = tk.Label(self.middle_frame, textvariable=self.mode_value, width=10, font=('Aerial', 20),
+                                   bg='white')
         self.mode_entry.grid(row=2, column=1)
 
         # Adding middle frame to second row in grid
@@ -107,7 +111,6 @@ class MeanMedianModeWindow:
         self.mean_value.set(mean)
         self.median_value.set(median)
         self.mode_value.set(mode)
-        # TODO: Add these to the correct location
 
     def exit(self):
         """

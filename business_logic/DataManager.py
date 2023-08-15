@@ -1,5 +1,6 @@
 import json
 import statistics
+from json import JSONDecodeError
 
 import pandas as pd
 
@@ -8,25 +9,7 @@ from utils import LoggerFactory
 from utils.NaNConverter import NaNConverter
 
 
-def remove_unwanted_NGRs(unwanted_NGRs, jsonFile):
-    """
-        Removes NGR data from the json file passed in
-    """
 
-    LoggerFactory.get_logger().info(f"Started removing the following NGR's from the data set, {unwanted_NGRs}")
-    # Load the data from the JSON file
-    with open(jsonFile, 'r') as file:
-        LoggerFactory.get_logger().info(f"Opened {jsonFile} in order to remove NGR's")
-        data = json.load(file)
-
-    # Use list comprehension to keep only the entries with an NGR not in the unwanted set
-    data = [entry for entry in data if entry['transmitter_info']['NGR'] not in unwanted_NGRs]
-    LoggerFactory.get_logger().info(f"Successfully removed NGR's")
-
-    # Write the data back to the JSON file
-    with open(jsonFile, 'w') as file:
-        LoggerFactory.get_logger().info(f"Updating {jsonFile} with changes")
-        json.dump(data, file, indent=4)  # Use indent to make it human-readable
 
 
 class DataManager:
@@ -46,8 +29,27 @@ class DataManager:
         """
         return self.data_frame
 
-    @staticmethod
-    def extract_EID_data(multiplexes, jsonFile):
+    def remove_unwanted_NGRs(self, unwanted_NGRs, jsonFile):
+        """
+            Removes NGR data from the json file passed in
+        """
+
+        LoggerFactory.get_logger().info(f"Started removing the following NGR's from the data set, {unwanted_NGRs}")
+        # Load the data from the JSON file
+        with open(jsonFile, 'r') as file:
+            LoggerFactory.get_logger().info(f"Opened {jsonFile} in order to remove NGR's")
+            data = json.load(file)
+
+        # Use list comprehension to keep only the entries with an NGR not in the unwanted set
+        data = [entry for entry in data if entry['transmitter_info']['NGR'] not in unwanted_NGRs]
+        LoggerFactory.get_logger().info(f"Successfully removed NGR's")
+
+        # Write the data back to the JSON file
+        with open(jsonFile, 'w') as file:
+            LoggerFactory.get_logger().info(f"Updating {jsonFile} with changes")
+            json.dump(data, file, indent=4)  # Use indent to make it human-readable
+
+    def extract_EID_data(self, multiplexes, jsonFile):
         """
             Extracts EID data into a new entry.
             Renames 'In-Use Ae Ht' to 'Aerial height (m)'
@@ -128,6 +130,10 @@ class DataManager:
                 json.dump(json.loads(self.data_frame.to_json(orient='records')), file, indent=4)
             LoggerFactory.get_logger().info(f"File written Successfully")
             return True  # return result to GUI to inform of outcome
+        except JSONDecodeError as error:
+            # Catch errors that may occur due to the json decoding failing
+            LoggerFactory.get_logger().error(f"An error occurred whilst decoding the JSON: {error}")
+            return False  # return result to GUI to inform of outcome
         except Exception as error:
             # Catch errors that may occur due to the json file being invalid
             LoggerFactory.get_logger().error(f"An error occurred whilst saving Data Frame to .json file: {error}")
@@ -153,7 +159,7 @@ class DataManager:
                             "In-Use Ae Ht": row['In-Use Ae Ht'],
                             "In-Use ERP Total": row['In-Use ERP Total'],
                             "Dir Max ERP": row['Dir Max ERP'],
-                            "Radiation Pattern":
+                            "Radiation Pattern":  # Group Radiation patterns into separate node
                                 {str(i * 10): row[str(i * 10)] for i in range(36)},
                             "Lat": row['Lat'],
                             "Long": row['Long']
@@ -170,7 +176,7 @@ class DataManager:
                             "Block": row['Block'],
                             "TII Main Id (Hex)": row['TII Main Id (Hex)'],
                             "TII Sub Id (Hex)": row['TII Sub Id (Hex)'],
-                            "Services": [  # Group services together
+                            "Services": [  # Group services together into a node
                                 {f'Serv Label{i} ': row[f'Serv Label{i} '],
                                  f'SId {i} (Hex)': row[f'SId {i} (Hex)'],
                                  f'LSN {i} (Hex)': row[f'LSN {i} (Hex)']}
@@ -181,6 +187,9 @@ class DataManager:
                     }
                     LoggerFactory.get_logger().debug(f"Adding entry with ID {row['id']} to dictionary")
                     nested_dict.append(entry)  # Adding entry to dictionary
+                except JSONDecodeError as error:
+                    # Catch errors that may occur due to the json decoding
+                    LoggerFactory.get_logger().error(f"An error occurred whilst decoding the JSON: {error}")
                 except Exception as error:
                     # Catching error and logging result
                     LoggerFactory.get_logger().error(f"Unable to parse Data Frame Series: {error}")
@@ -188,7 +197,7 @@ class DataManager:
             # Convert the nested dictionary into a JSON string
             LoggerFactory.get_logger().info(f"Converting nested dictionary into a JSON string with indentation")
             # Writing dictionary to JSON object. Using a NaN converter to clean the NaN's into nulls
-            nested_json = json.dumps(nested_dict, indent=4, cls=NaNConverter)
+            nested_json = json.dumps(nested_dict, skipkeys=True, indent=4, cls=NaNConverter)
 
             # Write the JSON string to a file
             with open(json_file_name, 'w') as file:
@@ -196,6 +205,10 @@ class DataManager:
                 file.write(nested_json)
             LoggerFactory.get_logger().info(f"File written Successfully")
             return True  # return result to GUI to inform of outcome
+        except JSONDecodeError as error:
+            # Catch errors that may occur due to the json decoding
+            LoggerFactory.get_logger().error(f"An error occurred whilst decoding the JSON: {error}")
+            return False  # return result to GUI to inform of outcome
         except Exception as error:
             LoggerFactory.get_logger().error(f"An error occurred whilst saving Data Frame to .json File: {error}")
             return False  # return result to GUI to inform of outcome
@@ -209,7 +222,7 @@ class DataManager:
         LoggerFactory.get_logger().info(f"Starting Cleaning and Data Mangling of Data Frame")
         self.save_data_frame_to_json(self.json_file_name)
         # Remove the following NGRs from the JSON File
-        remove_unwanted_NGRs({"NZ02553847", "SE213515", "NT05399374", "NT25265908"}, self.json_file_name)
+        self.remove_unwanted_NGRs({"NZ02553847", "SE213515", "NT05399374", "NT25265908"}, self.json_file_name)
         # Extract out and rename the following EID multiplexes from the JSON File
         self.extract_EID_data(["C18A", "C18F", "C188"], self.json_file_name)
         # Finally, read in the new JSON File into a Data Frame
@@ -316,4 +329,4 @@ class DataManager:
                 LoggerFactory.get_logger().error(f"Unable to get EID data: {error}")
 
         LoggerFactory.get_logger().info(f"Finished gathering {len(graph_data_items)} GraphDataItems")
-        return graph_data_items
+        return graph_data_items  # Returns the GraphData items that have been extracted

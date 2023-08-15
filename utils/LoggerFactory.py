@@ -5,7 +5,10 @@ import sys
 class LoggerFactory:
     """
         A Class that is responsible for logging throughout the application
+        Ability to load to file, console and GUI Text Components
     """
+
+    # A reference to the Logger that can be accessed anywhere in the application using the get_logger() method
     _LOG = None
 
     @staticmethod
@@ -43,6 +46,8 @@ class LoggerFactory:
             Using the Singleton Pattern.
         """
 
+        # Checks to see if a _LOG has already been created and if so returns the existing log
+        # otherwise will instantiate a new one
         if LoggerFactory._LOG is None:
             LoggerFactory._LOG = LoggerFactory.__create_logger()
         return LoggerFactory._LOG

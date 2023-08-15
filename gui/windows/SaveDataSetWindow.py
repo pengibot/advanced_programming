@@ -9,6 +9,7 @@ class SaveDataSetWindow:
         Window to save the data set to a specific file.
     """
 
+    # Reference to the Data Manager to retrieve/store data
     data_manager = None
 
     def __init__(self, master, data_manager):
@@ -98,7 +99,7 @@ class SaveDataSetWindow:
 
     def save(self):
         """
-            Action to save file, perform validation TODO: Perform validation here
+            Action to save a .json file
         """
 
         LoggerFactory.get_logger().info(f"Saving file as {self.save_file_path.get()}")

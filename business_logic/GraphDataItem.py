@@ -1,8 +1,10 @@
 class GraphDataItem:
     """
         Data Item to hold required data for the Graph and Correlation Data
+        Used like a Data Transfer Object, DTO
     """
 
+    # Data that can be stored in this Data Item
     eid: str
     site: str
     freq: float

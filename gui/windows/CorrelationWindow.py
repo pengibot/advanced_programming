@@ -62,16 +62,23 @@ class CorrelationWindow:
         canvas.draw()  # Renders the figure
         canvas_widget.grid(row=1, column=0, padx=(30, 0), pady=(5, 0))  # Assigning to Grid, giving some padding
 
+        # Created a frame to group components at the bottom of the dialog
         self.bottom_frame = tk.Frame(self.window, bg='white')
 
-        self.close_button = tk.Button(self.bottom_frame, text="Close", command=self.window.destroy, padx=50, pady=5)
+        # Adding Button component to load files
+        self.close_button = tk.Button(self.bottom_frame, text="Close", command=self.close_window, padx=50, pady=5)
         self.close_button.grid(row=0, column=0)
 
+        # Adding bottom frame to third row in grid
         self.bottom_frame.columnconfigure(0, weight=1)
         self.bottom_frame.rowconfigure(0, weight=1)
         self.bottom_frame.grid(row=2, column=0, sticky="NESW", pady=(0, 20), padx=50)
 
     def creat_correlation_matrix(self):
+        """
+            Gets data from Data Manager and builds a correlation matrix
+        """
+
         # Load the data to be correlated
         LoggerFactory.get_logger().info("Calling Data Manager to extract needed data")
         graph_data_items = self.data_manager.extract_graph_data()  # Returns list of GraphData items
@@ -112,17 +119,11 @@ class CorrelationWindow:
         # Assigning codes to string categories in order to create a correlation Matrix
         LoggerFactory.get_logger().info("Creating Category codes for DataFrame non numeric items")
         data_cleaned["Block"] = data_cleaned["Block"].astype("category").cat.codes
-        LoggerFactory.get_logger().info(f"Converting Block to 'category' codes")
         data_cleaned["Serv Label1"] = data_cleaned["Serv Label1"].astype("category").cat.codes
-        LoggerFactory.get_logger().info(f"Converting Serv Label1 to 'category' codes")
         data_cleaned["Serv Label2"] = data_cleaned["Serv Label2"].astype("category").cat.codes
-        LoggerFactory.get_logger().info(f"Converting Serv Label2 to 'category' codes")
         data_cleaned["Serv Label3"] = data_cleaned["Serv Label3"].astype("category").cat.codes
-        LoggerFactory.get_logger().info(f"Converting Serv Label3 to 'category' codes")
         data_cleaned["Serv Label4"] = data_cleaned["Serv Label4"].astype("category").cat.codes
-        LoggerFactory.get_logger().info(f"Converting Serv Label4 to 'category' codes")
         data_cleaned["Serv Label10"] = data_cleaned["Serv Label10"].astype("category").cat.codes
-        LoggerFactory.get_logger().info(f"Converting Serv Label10 to 'category' codes")
 
         return data_cleaned  # Returning cleaned data
 
@@ -162,3 +163,10 @@ class CorrelationWindow:
         plt.title('Correlation Matrix of Selected Variables', pad=90)
 
         return figure  # return figure to be displayed on canvas
+
+    def close_window(self):
+        """
+            Action to close Correlation Window
+        """
+        LoggerFactory.get_logger().info("Closing Correlation Window")
+        self.window.destroy()

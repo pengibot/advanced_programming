@@ -8,6 +8,7 @@ class LoadDataSetWindow:
     """
         Window to load a data set from .json file.
     """
+
     data_manager = None  # Reference to the Data Manager to query for Data
     set_state_of_buttons = None  # Function passed in to control Main Window Menu Buttons
 
@@ -93,8 +94,8 @@ class LoadDataSetWindow:
             Action to select file name and filepath
         """
         file_name = filedialog.askopenfilename(defaultextension=".json",
-                                                 filetypes=(("JSON Files", "*.json"), ("All Files", "*.*")),
-                                                 initialdir=".")
+                                               filetypes=(("JSON Files", "*.json"), ("All Files", "*.*")),
+                                               initialdir=".")
         LoggerFactory.get_logger().info(f"Selected load file location as {file_name}")
         self.load_file_path.set(file_name)
 
