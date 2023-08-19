@@ -102,6 +102,7 @@ class CorrelationWindow:
 
         # Calculate the correlation matrix
         LoggerFactory.get_logger().info("Creating Correlation Matrix")
+        LoggerFactory.get_logger().info(f"Cleaned Data: [{data_cleaned}]")
         correlation_matrix = data_cleaned.corr()  # Call to pandas function which creates a correlation matrix
 
         return correlation_matrix  # Return Correlation Data to be displayed in a graph
