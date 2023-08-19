@@ -23,6 +23,10 @@ class MeanMedianModeWindow:
         self.window.iconphoto(False, self.save_icon_image)  # Add icon for dialog
         self.master = master
 
+        # Using StringVar to set text values and retrieve them
+        self.height = tk.StringVar()
+        self.year = tk.StringVar()
+
         # Using StringVar to set text value to be able to retrieve
         self.mean_value = tk.StringVar()
         self.median_value = tk.StringVar()
@@ -42,10 +46,30 @@ class MeanMedianModeWindow:
                                                 "the extracted DAB multiplexes extracted earlier: C18A, C18F and C188",
                                            font=('Aerial', 11), anchor="w", justify="left", bg='white',
                                            wraplength=400)
-        self.instructions_label.grid(row=0, column=1, padx=(5, 0))
+        self.instructions_label.grid(row=0, column=1, columnspan=5, padx=(5, 10))
+
+        # Adding description to height input
+        self.height_description = tk.Label(self.top_frame, text="Height greater than:", font=('Aerial', 11),
+                                           bg='white')
+        self.height_description.grid(row=1, column=1)
+
+        # Adding Entry component for height input
+        self.height_text_entry = tk.Entry(self.top_frame, textvariable=self.height, width=10)
+        self.height_text_entry.insert(0, "75")
+        self.height_text_entry.grid(row=1, column=2)
+
+        # Adding description to year input
+        self.year_description = tk.Label(self.top_frame, text="Year from:", font=('Aerial', 11),
+                                         bg='white')
+        self.year_description.grid(row=1, column=3)
+
+        # Adding Entry component for height input
+        self.year_text_entry = tk.Entry(self.top_frame, textvariable=self.year, width=10)
+        self.year_text_entry.insert(0, "2001")
+        self.year_text_entry.grid(row=1, column=4)
 
         # Adding top frame to first row in grid
-        self.top_frame.grid(row=0, column=0, sticky="NESW", pady=(20, 5))
+        self.top_frame.grid(row=0, column=0, sticky="NESW", pady=(10, 5))
 
         # Created a frame to group components at the middle of the dialog
         self.middle_frame = tk.Frame(self.window, bg='white')
@@ -107,7 +131,22 @@ class MeanMedianModeWindow:
         """
 
         LoggerFactory.get_logger().info(f"Calculating Mean/Median/Mode")
-        mean, median, mode = self.data_manager.generate_data_for_in_use_erp_total()
+
+        try:
+            height_value = int(self.height.get())
+        except ValueError as error:
+            LoggerFactory.get_logger().info(
+                f"Unable to convert {self.height.get()} to Height Value, defaulting to 75: {error}")
+            height_value = 75
+
+        try:
+            year_value = int(self.year.get())
+        except ValueError as error:
+            LoggerFactory.get_logger().info(
+                f"Unable to convert {self.year.get()} to Height Value, defaulting to 75: {error}")
+            year_value = 2001
+
+        mean, median, mode = self.data_manager.generate_data_for_in_use_erp_total(height_value, year_value)
         self.mean_value.set(mean)
         self.median_value.set(median)
         self.mode_value.set(mode)

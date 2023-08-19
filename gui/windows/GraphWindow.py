@@ -61,10 +61,10 @@ class GraphWindow:
         columns = ["EID", "Site"]
 
         # Creating the Panda Data Frame
-        df = pd.DataFrame(data=data, columns=columns)
+        data_frame = pd.DataFrame(data=data, columns=columns)
 
         # Setting the axes values
-        value_counts = df["EID"].value_counts()
+        value_counts = data_frame["EID"].value_counts()
         unique_values = value_counts.index.tolist()
         axes[0].barh(unique_values, value_counts)  # Specifying a horizontal bar chart
         # Removing top and right spines
@@ -87,18 +87,18 @@ class GraphWindow:
         columns = ["Site", "Freq."]
 
         # Creating the Panda Data Frame
-        df = pd.DataFrame(data=data, columns=columns)
+        data_frame = pd.DataFrame(data=data, columns=columns)
 
         # Setting the axes values
-        axes[1].bar(df["Site"], df["Freq."])  # Specifying a vertical (default) bar chart
+        axes[1].bar(data_frame["Site"], data_frame["Freq."])  # Specifying a vertical (default) bar chart
         # Removing top and right spines
         axes[1].spines["right"].set_visible(False)
         axes[1].spines["top"].set_visible(False)
         # Setting the axes labels
         axes[1].set_xlabel("Site", fontsize=8)
         axes[1].set_ylabel("Freq.", fontsize=8)
-        axes[1].set_xticks(df["Site"])  # Need to set before adding a label to avoid warnings
-        axes[1].set_xticklabels(df["Site"], rotation=90)  # Rotate labels so they do not cross over each other
+        axes[1].set_xticks(data_frame["Site"])  # Need to set before adding a label to avoid warnings
+        axes[1].set_xticklabels(data_frame["Site"], rotation=90)  # Rotate labels so they do not cross over each other
         axes[1].set_title("Freq. at each Site")
 
         # Automatically adjusts the parameters of the plot to minimize the padding

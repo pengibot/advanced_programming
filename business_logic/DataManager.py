@@ -192,7 +192,7 @@ class DataManager:
                     nested_dict.append(entry)  # Adding entry to dictionary
                 except JSONDecodeError as error:
                     # Catch errors that may occur due to the json decoding
-                    LoggerFactory.get_logger().error(f"An error occurred whilst decoding the JSON: {error}")
+                    LoggerFactory.get_logger().warn(f"An error occurred whilst encoding the JSON: {error}")
                 except Exception as error:
                     # Catching error and logging result
                     LoggerFactory.get_logger().error(f"Unable to parse Data Frame Series: {error}")
@@ -232,7 +232,7 @@ class DataManager:
         self.read_in_json_data(self.json_file_name)
         LoggerFactory.get_logger().info(f"Finished Cleaning and Data Wrangling of Data Frame")
 
-    def generate_data_for_in_use_erp_total(self):
+    def generate_data_for_in_use_erp_total(self, height=75, year=2001):
         """
             Responsible for reading the DataFrame and extracting out the
         """
@@ -251,8 +251,8 @@ class DataManager:
                 if type(eid) == dict:  # If EID is a dictionary, it must be nested with necessary data
                     key = list(dict(eid).keys())[0]  # Get the key (C18A, C18F or C188)
                     LoggerFactory.get_logger().info(f"Found ERP({key}) containing extracted data")
-                    LoggerFactory.get_logger().info(f"Checking for Site Height > 75 and Date from 2001")
-                    if broadcast_dict["EID"][key]["Site Height"] > 75 and int(broadcast_dict["Date"][-4:]) >= 2001:
+                    LoggerFactory.get_logger().info(f"Checking for Site Height > {height} and Date from {year}")
+                    if broadcast_dict["EID"][key]["Site Height"] > height and int(broadcast_dict["Date"][-4:]) >= year:
                         erp_total.append(broadcast_dict["EID"][key]["Power (kW)"])  # Add Power (kW) to erp_total
                         LoggerFactory.get_logger().info(f"{key} matched search criteria")
                     else:
@@ -273,12 +273,17 @@ class DataManager:
             erp_total[counter] = float(erp_total[counter].replace(",", "."))  # Replace , with decimal point
             counter += 1
 
+        if len(erp_total) == 0:
+            LoggerFactory.get_logger().info(f"No data matches the filter of Height={height} and Year={year}")
+            return None, None, None
+
         LoggerFactory.get_logger().info(f"Mean = {statistics.mean(erp_total)}")
         LoggerFactory.get_logger().info(f"Median = {statistics.median(erp_total)}")
         LoggerFactory.get_logger().info(f"Mode = {statistics.mode(erp_total)}")
 
         # return mean, median and mode to GUI to display to user
-        return statistics.mean(erp_total), statistics.median(erp_total), statistics.mode(erp_total)
+        return round(statistics.mean(erp_total), 2), round(statistics.median(erp_total), 2), round(
+            statistics.mode(erp_total), 2)
 
     def extract_graph_data(self):
         """
