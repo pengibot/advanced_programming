@@ -180,7 +180,7 @@ class DataManager:
                             "TII Main Id (Hex)": row['TII Main Id (Hex)'],
                             "TII Sub Id (Hex)": row['TII Sub Id (Hex)'],
                             "Services": [  # Group services together into a node
-                                {f'Serv Label{i} ': row[f'Serv Label{i} '],
+                                {f'Serv Label{i}': row[f'Serv Label{i} '],  # Cleaning the extra space
                                  f'SId {i} (Hex)': row[f'SId {i} (Hex)'],
                                  f'LSN {i} (Hex)': row[f'LSN {i} (Hex)']}
                                 for i in range(1, 33) if pd.notna(row[f'Serv Label{i} '])],
@@ -315,15 +315,15 @@ class DataManager:
                     LoggerFactory.get_logger().debug(f"Extracted Freq. as {graph_data_item.freq}")
                     graph_data_item.block = broadcast_dict["Block"]
                     LoggerFactory.get_logger().debug(f"Extracted Block as {graph_data_item.block}")
-                    graph_data_item.serv_label_1 = broadcast_dict["Services"][0]["Serv Label1 "]
+                    graph_data_item.serv_label_1 = broadcast_dict["Services"][0]["Serv Label1"]
                     LoggerFactory.get_logger().debug(f"Extracted Serv Label1 as {graph_data_item.serv_label_1}")
-                    graph_data_item.serv_label_2 = broadcast_dict["Services"][1]["Serv Label2 "]
+                    graph_data_item.serv_label_2 = broadcast_dict["Services"][1]["Serv Label2"]
                     LoggerFactory.get_logger().debug(f"Extracted Serv Label2 as {graph_data_item.serv_label_2}")
-                    graph_data_item.serv_label_3 = broadcast_dict["Services"][2]["Serv Label3 "]
+                    graph_data_item.serv_label_3 = broadcast_dict["Services"][2]["Serv Label3"]
                     LoggerFactory.get_logger().debug(f"Extracted Serv Label3 as {graph_data_item.serv_label_3}")
-                    graph_data_item.serv_label_4 = broadcast_dict["Services"][3]["Serv Label4 "]
+                    graph_data_item.serv_label_4 = broadcast_dict["Services"][3]["Serv Label4"]
                     LoggerFactory.get_logger().debug(f"Extracted Serv Label4 as {graph_data_item.serv_label_4}")
-                    graph_data_item.serv_label_10 = broadcast_dict["Services"][9]["Serv Label10 "]
+                    graph_data_item.serv_label_10 = broadcast_dict["Services"][9]["Serv Label10"]
                     LoggerFactory.get_logger().debug(f"Extracted Serv Label10 as {graph_data_item.serv_label_10}")
 
                     LoggerFactory.get_logger().info(f"Finished Creating GraphDataItem, adding to list")
